@@ -12,6 +12,7 @@
 using namespace std;
 
 int main() {
+	cout << "Hello world!" <<endl;
 	Strds s1("abc");
 	Strds s2("de");
 	int a = s1.compare(s2);
