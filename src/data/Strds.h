@@ -2,7 +2,7 @@
  * Strds.h
  *
  *  Created on: Jul 23, 2013
- *      Author: root
+ *      Author: nekosama
  */
 
 #ifndef STRDS_H_

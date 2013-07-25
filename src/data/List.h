@@ -2,7 +2,7 @@
  * List.h
  *
  *  Created on: Jul 25, 2013
- *      Author: root
+ *      Author: nekosama
  */
 
 #ifndef LIST_H_
@@ -55,5 +55,6 @@ private:
 	ListNode<T>* tail;
 	unsigned long len;
 };
+
 
 #endif /* LIST_H_ */

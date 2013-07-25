@@ -2,7 +2,7 @@
  * Strds.cpp
  *
  *  Created on: Jul 23, 2013
- *      Author: root
+ *      Author: nekosama
  */
 
 #include "Strds.h"
