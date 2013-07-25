@@ -9,26 +9,29 @@
 #define STRDS_H_
 #include <iostream>
 #include "Constants.h"
+#include <string>
 using namespace std;
 
 class Strds {
 public:
 	Strds();//init a Strds with 0 free and 0 length and empty string
-	Strds(char* t);//init strds with concrete text, the free length will be 0
+	Strds(string str);//init strds with concrete text, the free length will be 0
 	Strds(int len);//init strds with special free buffer length and empty content;
+	Strds(const Strds& s);
+	Strds& operator =(const Strds& s);
 	virtual ~Strds();
 	int size();
 	int compare(const Strds& another);
-	void append(char* app_str);
-	Strds subStr(int start = 0, int end = len-1);
-	char* getContent();
+	void append(string app_str);
+	void append(const Strds& another);
+	Strds subStr(int start = 0, int end = -1);
+	string getContent() const;
 
-	static Strds strds_copy(const Strds& copy_item);
 private:
+	Strds(const char* t,int len);
 	int len;
 	int free;
 	char* text;
-
 	void makeRoomForAppend(int required_len);
 };
 

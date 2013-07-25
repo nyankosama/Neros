@@ -19,17 +19,18 @@ Strds::~Strds() {
 	delete text;
 }
 
-Strds::Strds(char* t){
-	len = strlen (t);
-	text = new char[len * 2];
+Strds::Strds(string t){
+	const char* c_str = t.c_str();
+	len = strlen (c_str);
+	text = new char[len * 2 + 1];
 	free = len;
-	strcpy(text,t);
+	strcpy(text,c_str);
 }
 
 Strds::Strds(int len){
 	this->len = len;
 	free = len * 2;
-	text = new char[len * 2];
+	text = new char[len * 2 + 1];
 	text[0]='\0';
 }
 
@@ -37,13 +38,54 @@ int Strds::size(){
 	return len;
 }
 
-char* Strds::getContent(){
-	return text;
+string Strds::getContent() const{
+	return string(text);
 }
 
-void Strds::append(char* app_str){
-	int required_len = strlen(app_str);
+void Strds::append(string app_str){
+	const char* c_str = app_str.c_str();
+	int required_len = strlen(c_str);
 	makeRoomForAppend(required_len);
+	strcat(text,c_str);
+}
+
+Strds::Strds(const Strds& s) {
+	delete text;
+	len = s.len;
+	free = s.free;
+	text = new char[len+free+1];
+	strcpy(text,s.text);
+}
+
+Strds& Strds::operator =(const Strds& s) {
+	delete text;
+	len = s.len;
+	free = s.free;
+	text = new char[len+free+1];
+	strcpy(text,s.text);
+}
+
+int Strds::compare(const Strds& another) {
+	return strcmp(text,another.text);
+}
+
+void Strds::append(const Strds& another) {
+	append(another.getContent());
+}
+
+Strds Strds::subStr(int start, int end) {
+	if (end == -1)
+		end = len - 1;
+	char* tmp_p = text + start;
+	Strds tmp(tmp_p,end-start+1);
+	return tmp;
+}
+
+Strds::Strds(const char* t, int len) {
+	this->len = len;
+	free = len;
+	text = new char[len*2 + 1];
+	strncpy(text,t,len);
 }
 
 void Strds::makeRoomForAppend(int required_len){
@@ -57,10 +99,12 @@ void Strds::makeRoomForAppend(int required_len){
 	else
 		newlen += STRDS_MAX_PREALLOC;
 
-	char* tmp = new char[newlen];
+	char* tmp = new char[newlen + 1];
 	strcpy(tmp,text);
 	delete text;
 	text = tmp;
 	free = newlen - len;
 }
+
+
 
