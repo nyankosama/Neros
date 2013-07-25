@@ -16,3 +16,10 @@
 *.mk
 *.d
 makefile
+
+# eclipse settings
+.settings/
+Debug/
+Default/
+.cproject
+.project
