@@ -45,18 +45,18 @@ public:
 	inline virtual ~List();
 	List(const List<T>& list);
 	List<T>& operator =(const List<T>& li);
-	int compare(const List<T>& li);
+	int compare(const List<T>* li);
 	ListNode<T>* popHead();
 	ListNode<T>* popTail();
-	ListNode<T>* popAt(ListNode<T>& index);
+	ListNode<T>* popAt(ListNode<T>* index);
 	ListNode<T>* popAt(int index);
 	inline ListNode<T>* getHead();
 	inline ListNode<T>* getTail();
-	void appendTail(ListNode<T>& li);//based on copy
-	void appendHead(ListNode<T>& li);
-	void insert(ListNode<T>& index,ListNode<T>& val);//insert the val at the position after index
-	void insert(int index,ListNode<T>& val);
-	void del(ListNode<T>& index);
+	void appendTail(ListNode<T>* li);//based on copy
+	void appendHead(ListNode<T>* li);
+	void insert(ListNode<T>* index,ListNode<T>* val);//insert the val at the position after index
+	bool insert(int index,ListNode<T>* val);
+	void del(ListNode<T>* index);
 	void del(int index);
 	void delAll();
 	inline long size() const;
@@ -67,6 +67,6 @@ private:
 	mutable ListNode<T>* tail;
 	unsigned long len;
 	void makeCopy(const List<T> &list);
-	void kickOut(ListNode<T>& index);
+	void kickOut(ListNode<T>* index);
 };
 #endif /* LIST_H_ */

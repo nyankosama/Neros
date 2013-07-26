@@ -29,32 +29,17 @@ public:
 
 
 int main() {
-	cout << "Hello world!" <<endl;
-	Strds s1("abc");
-	Strds s2("de");
-	int a = s1.compare(s2);
-	cout << "compare:" <<a<<endl;
-	s1.append("123");
-	cout << s1.getContent() <<endl;
-	s1.append("456");
-	cout << s1.getContent() <<endl;
-	s1.append(s2);
-	cout << s1.getContent() <<endl;
-	Strds s3 = s1.subStr(0,1);
-	cout << s3.getContent() <<endl;
-
-	ListNode<int> node;
-	node.value = 1;
-	ListIter<int> iter(node);
-
 	cout << "========" << endl;
 
-	List<int> li;
-
-	ListNode<int> node1;
-	ListNode<int> node2;
-	node1.value = 1;
-	node2.value = 2;
-	node1.next = &node2;
-	node2.prev = &node1;
+	List<int> list;
+	ListNode<int>* n1 = new ListNode<int>();
+	ListNode<int>* n2 = new ListNode<int>();
+	n1->value = 1;
+	n2->value = 2;
+	list.appendTail(n1);
+	list.appendTail(n2);
+	cout << "Hello world" << endl;
+	cout << list.size() << endl;
+	list.delAll();
+	cout << list.size() << endl;
 }

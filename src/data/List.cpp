@@ -81,17 +81,17 @@ inline List<T>& List<T>::operator =(const List<T>& li) {
 }
 
 template<typename T>
-inline int List<T>::compare(const List<T>& li) {
+inline int List<T>::compare(const List<T>* li) {
 	ListNode<T>* iter_my = head;
-	ListNode<T>* iter = li.head;
+	ListNode<T>* iter = li->head;
 
-	while (iter_my->next != tail && iter->next != li.tail) {
+	while (iter_my->next != tail && iter->next != li->tail) {
 		if (iter_my->value != iter->value) {
 			return -1;
 		}
 	}
 
-	if (iter_my->next == tail && iter->next == li.tail) {
+	if (iter_my->next == tail && iter->next == li->tail) {
 		if (iter_my->next->value == iter->next->value)
 			return 0;
 		else
@@ -105,6 +105,7 @@ inline ListNode<T>* List<T>::popHead() {
 	ListNode<T>* iter = head;
 	head = head->next;
 	head->prev = 0;
+	len--;
 	return iter;
 }
 
@@ -113,60 +114,85 @@ inline ListNode<T>* List<T>::popTail() {
 	ListNode<T>* iter = tail;
 	tail = tail->prev;
 	tail->next = 0;
+	len--;
 	return iter;
 }
 
 template<typename T>
-inline ListNode<T>* List<T>::popAt(ListNode<T>& index) {
+inline ListNode<T>* List<T>::popAt(ListNode<T>* index) {
 	kickOut(index);
+	len--;
 	return &index;
 }
 
 template<typename T>
 inline ListNode<T>* List<T>::popAt(int index) {
 	ListNode<T>* iter = head;
-	for (int i = 0; i < index; i++) {
+	for (int i = 0; i < index && iter != 0; i++) {
 		iter = iter->next;
 	}
+	if (iter == 0)
+		return 0;
 	popAt(*iter);
 }
 
 template<typename T>
-inline void List<T>::appendTail(ListNode<T>& li) {
-	ListNode<T>* iter = tail;
-	tail->next = &li;
-	li.prev = iter;
+inline void List<T>::appendTail(ListNode<T>* li) {
+	if (len == 0) {
+		head = li;
+		tail = li;
+		li->next = 0;
+		li->prev = 0;
+	} else {
+		ListNode<T>* iter = tail;
+		tail->next = li;
+		li->prev = iter;
+	}
+	len++;
 }
 
 template<typename T>
-inline void List<T>::appendHead(ListNode<T>& li) {
-	ListNode<T>* iter = head;
-	head->prev = &li;
-	li.next = iter;
+inline void List<T>::appendHead(ListNode<T>* li) {
+	if (len == 0){
+		head = li;
+		tail = li;
+		li->next = 0;
+		li->prev = 0;
+	} else{
+		ListNode<T>* iter = head;
+		head->prev = li;
+		li->next = iter;
+	}
+	len++;
 }
 
 template<typename T>
-inline void List<T>::insert(ListNode<T>& index, ListNode<T>& val) {
-	ListNode<T>* next = index.next;
-	index.next = &val;
-	val.prev = &index;
-	val.next = next;
+inline void List<T>::insert(ListNode<T>* index, ListNode<T>* val) {
+	ListNode<T>* next = index->next;
+	index->next = &val;
+	val->prev = &index;
+	val->next = next;
 	next->prev = &val;
+	len++;
 }
 
 template<typename T>
-inline void List<T>::insert(int index, ListNode<T>& val) {
+inline bool List<T>::insert(int index, ListNode<T>* val) {
 	ListNode<T>* iter = head;
-	for (int i = 0; i < index; i++) {
+	for (int i = 0; i < index && iter != 0; i++) {
 		iter = iter->next;
 	}
+	if (iter == 0)
+		return false;
 	insert(iter, val);
+	return true;
 }
 
 template<typename T>
-inline void List<T>::del(ListNode<T>& index) {
+inline void List<T>::del(ListNode<T>* index) {
 	kickOut(index);
 	delete &index;
+	len--;
 }
 
 template<typename T>
@@ -176,10 +202,11 @@ inline void List<T>::del(int index) {
 		iter = iter->next;
 	}
 	del(*iter);
+	len--;
 }
 
 template<typename T>
-inline void List<T>::kickOut(ListNode<T>& index) {
+inline void List<T>::kickOut(ListNode<T>* index) {
 	ListNode<T>* prev = 0;
 	ListNode<T>* next = 0;
 	if (&index == head) {
@@ -189,8 +216,8 @@ inline void List<T>::kickOut(ListNode<T>& index) {
 		prev = index->prev;
 		prev->next = 0;
 	} else {
-		prev = index.prev;
-		next = index.next;
+		prev = index->prev;
+		next = index->next;
 		prev->next = next;
 		next->prev = prev;
 	}
