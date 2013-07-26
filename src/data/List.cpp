@@ -85,13 +85,13 @@ inline int List<T>::compare(const List<T>& li) {
 	ListNode<T>* iter_my = head;
 	ListNode<T>* iter = li.head;
 
-	while (iter_my->next != tail && iter->next != li.tail){
-		if (iter_my->value != iter->value){
+	while (iter_my->next != tail && iter->next != li.tail) {
+		if (iter_my->value != iter->value) {
 			return -1;
 		}
 	}
 
-	if (iter_my->next == tail && iter->next == li.tail){
+	if (iter_my->next == tail && iter->next == li.tail) {
 		if (iter_my->next->value == iter->next->value)
 			return 0;
 		else
@@ -114,6 +114,21 @@ inline ListNode<T>* List<T>::popTail() {
 	tail = tail->prev;
 	tail->next = 0;
 	return iter;
+}
+
+template<typename T>
+inline ListNode<T>* List<T>::popAt(ListNode<T>& index) {
+	kickOut(index);
+	return &index;
+}
+
+template<typename T>
+inline ListNode<T>* List<T>::popAt(int index) {
+	ListNode<T>* iter = head;
+	for (int i = 0; i < index; i++) {
+		iter = iter->next;
+	}
+	popAt(*iter);
 }
 
 template<typename T>
@@ -142,31 +157,43 @@ inline void List<T>::insert(ListNode<T>& index, ListNode<T>& val) {
 template<typename T>
 inline void List<T>::insert(int index, ListNode<T>& val) {
 	ListNode<T>* iter = head;
-	for (int i=0;i<index;i++){
+	for (int i = 0; i < index; i++) {
 		iter = iter->next;
 	}
-	insert(iter,val);
+	insert(iter, val);
 }
 
 template<typename T>
 inline void List<T>::del(ListNode<T>& index) {
-	ListNode<T>* prev = 0;
-	ListNode<T>* next = 0;
-	if(&index == head){
-		next = index->next;
-		next->prev = 0;
-		delete index;
-	}
-	else if(&index == tail){
-
-	}
-	else{
-
-	}
+	kickOut(index);
+	delete &index;
 }
 
 template<typename T>
 inline void List<T>::del(int index) {
+	ListNode<T>* iter = head;
+	for (int i = 0; i < index; i++) {
+		iter = iter->next;
+	}
+	del(*iter);
+}
+
+template<typename T>
+inline void List<T>::kickOut(ListNode<T>& index) {
+	ListNode<T>* prev = 0;
+	ListNode<T>* next = 0;
+	if (&index == head) {
+		next = index->next;
+		next->prev = 0;
+	} else if (&index == tail) {
+		prev = index->prev;
+		prev->next = 0;
+	} else {
+		prev = index.prev;
+		next = index.next;
+		prev->next = next;
+		next->prev = prev;
+	}
 }
 
 template<typename T>
@@ -220,5 +247,12 @@ inline long List<T>::size() const {
 }
 
 template<typename T>
-inline ListNode<T>* List<T>::searchKey(void* key) {
+inline ListNode<T>* List<T>::searchKey(const T& key) {
+	ListNode<T>* iter = head;
+	while (iter != 0) {
+		if (iter->value == key)
+			return iter;
+		iter = iter->next;
+	}
+	return 0;
 }

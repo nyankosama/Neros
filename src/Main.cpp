@@ -11,6 +11,7 @@
 #include "data/Strds.h"
 #include "data/List.h"
 #include "data/List.cpp"
+#include <stdio.h>
 using namespace std;
 
 class T1{
@@ -56,12 +57,4 @@ int main() {
 	node2.value = 2;
 	node1.next = &node2;
 	node2.prev = &node1;
-
-	cout << "====" << endl;
-
-	int* p1 = new int();
-	int c = 1;
-	int* p2 = &c;
-	cout << sizeof(p1) <<endl;
-	cout << sizeof(p2) << endl;
 }
