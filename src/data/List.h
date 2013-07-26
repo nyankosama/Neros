@@ -1,6 +1,6 @@
 /*
  * List.h
- *
+ *	this is a list without commmon share nodes of other lists
  *  Created on: Jul 25, 2013
  *      Author: nekosama
  */
@@ -25,9 +25,11 @@ public:
 	ListIter(const List<T>& li);
 	ListIter(ListNode<T>& lin);
 	virtual ~ListIter();
-	T val();
-	T next();
-	T prev();
+	inline bool hasNext();
+	inline bool hasPrev();
+	inline T& val();
+	inline T& next();
+	inline T& prev();
 private:
 	ListNode<T>* lin;
 };
@@ -35,26 +37,30 @@ private:
 template <typename T>
 class List {
 public:
-	List();
-	virtual ~List();
+	inline List();
+	inline virtual ~List();
 	List(const List<T>& list);
 	List<T>& operator =(const List<T>& li);
-	int compare(const List<T>* li);
-	ListNode<T>& popHead();
-	ListNode<T>& popTail();
+	int compare(const List<T>& li);
+	ListNode<T>* popHead();
+	ListNode<T>* popTail();
+	inline ListNode<T>* getHead();
+	inline ListNode<T>* getTail();
 	void appendTail(ListNode<T>& li);//based on copy
 	void appendHead(ListNode<T>& li);
 	void insert(ListNode<T>& index,ListNode<T>& val);//insert the val at the position after index
 	void insert(int index,ListNode<T>& val);
 	void del(ListNode<T>& index);
 	void del(int index);
-	ListNode<T>& searchKey(void* key);
+	void delAll();
+	inline long size() const;
+	ListNode<T>* searchKey(void* key);
 
 private:
-	ListNode<T>* head;
-	ListNode<T>* tail;
+	mutable ListNode<T>* head;
+	mutable ListNode<T>* tail;
 	unsigned long len;
+	void makeCopy(const List<T> &list);
 };
-
 
 #endif /* LIST_H_ */

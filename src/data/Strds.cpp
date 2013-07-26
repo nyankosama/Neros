@@ -50,6 +50,7 @@ void Strds::append(string app_str){
 }
 
 Strds::Strds(const Strds& s) {
+	cout << "copy constructor!" <<endl;
 	delete text;
 	len = s.len;
 	free = s.free;

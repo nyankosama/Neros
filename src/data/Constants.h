@@ -12,4 +12,5 @@ const int DEFAULT_FREE_LEN = 20;
 const int STRDS_MAX_PREALLOC = 1024 * 1024;
 
 
+
 #endif /* CONSTRANT_H_ */
