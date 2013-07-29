@@ -6,15 +6,21 @@
  */
 
 #include "List.h"
+#include <iostream>
+using namespace std;
 
 template<typename T>
-inline ListIter<T>::ListIter(const List<T>& li) {
-	lin = &li.getHead();
+inline ListIter<T>::ListIter(List<T>& li) {
+	lin = new ListNode<T>();
+	lin->prev = 0;
+	lin->next = li.getHead();
 }
 
 template<typename T>
-inline ListIter<T>::ListIter(ListNode<T>& lin) {
-	this->lin = &lin;
+inline ListIter<T>::ListIter(ListNode<T>* lin) {
+	this->lin = new ListNode<T>();
+	this->lin->prev = 0;
+	this->lin->next = lin;
 }
 
 template<typename T>
@@ -104,7 +110,8 @@ template<typename T>
 inline ListNode<T>* List<T>::popHead() {
 	ListNode<T>* iter = head;
 	head = head->next;
-	head->prev = 0;
+	if (head != 0)
+		head->prev = 0;
 	len--;
 	return iter;
 }
@@ -113,7 +120,8 @@ template<typename T>
 inline ListNode<T>* List<T>::popTail() {
 	ListNode<T>* iter = tail;
 	tail = tail->prev;
-	tail->next = 0;
+	if (tail != 0)
+		tail->next = 0;
 	len--;
 	return iter;
 }
@@ -122,7 +130,7 @@ template<typename T>
 inline ListNode<T>* List<T>::popAt(ListNode<T>* index) {
 	kickOut(index);
 	len--;
-	return &index;
+	return index;
 }
 
 template<typename T>
@@ -133,7 +141,8 @@ inline ListNode<T>* List<T>::popAt(int index) {
 	}
 	if (iter == 0)
 		return 0;
-	popAt(*iter);
+	popAt(iter);
+	return iter;
 }
 
 template<typename T>
@@ -144,9 +153,9 @@ inline void List<T>::appendTail(ListNode<T>* li) {
 		li->next = 0;
 		li->prev = 0;
 	} else {
-		ListNode<T>* iter = tail;
 		tail->next = li;
-		li->prev = iter;
+		li->prev = tail;
+		tail = li;
 	}
 	len++;
 }
@@ -159,9 +168,9 @@ inline void List<T>::appendHead(ListNode<T>* li) {
 		li->next = 0;
 		li->prev = 0;
 	} else{
-		ListNode<T>* iter = head;
 		head->prev = li;
-		li->next = iter;
+		li->next = head;
+		head = li;
 	}
 	len++;
 }
@@ -169,15 +178,18 @@ inline void List<T>::appendHead(ListNode<T>* li) {
 template<typename T>
 inline void List<T>::insert(ListNode<T>* index, ListNode<T>* val) {
 	ListNode<T>* next = index->next;
-	index->next = &val;
-	val->prev = &index;
+	index->next = val;
+	val->prev = index;
 	val->next = next;
-	next->prev = &val;
+	if (next != 0)
+		next->prev = val;
 	len++;
 }
 
 template<typename T>
 inline bool List<T>::insert(int index, ListNode<T>* val) {
+	if (len == 0)
+		appendTail(val);
 	ListNode<T>* iter = head;
 	for (int i = 0; i < index && iter != 0; i++) {
 		iter = iter->next;
@@ -189,32 +201,40 @@ inline bool List<T>::insert(int index, ListNode<T>* val) {
 }
 
 template<typename T>
-inline void List<T>::del(ListNode<T>* index) {
+inline bool List<T>::del(ListNode<T>* index) {
 	kickOut(index);
-	delete &index;
+	delete index;
 	len--;
 }
 
 template<typename T>
-inline void List<T>::del(int index) {
+inline bool List<T>::del(int index) {
+	if (len == 0)
+		return false;
 	ListNode<T>* iter = head;
 	for (int i = 0; i < index; i++) {
 		iter = iter->next;
+		if (iter == 0)
+			return false;
 	}
-	del(*iter);
-	len--;
+	del(iter);
+	return true;
 }
 
 template<typename T>
 inline void List<T>::kickOut(ListNode<T>* index) {
 	ListNode<T>* prev = 0;
 	ListNode<T>* next = 0;
-	if (&index == head) {
+	if (index == head) {
 		next = index->next;
-		next->prev = 0;
-	} else if (&index == tail) {
+		if (next != 0)
+			next->prev = 0;
+		head = next;
+	} else if (index == tail) {
 		prev = index->prev;
-		prev->next = 0;
+		if (prev != 0)
+			prev->next = 0;
+		tail = prev;
 	} else {
 		prev = index->prev;
 		next = index->next;
@@ -236,7 +256,7 @@ inline ListNode<T>* List<T>::getTail() {
 template<typename T>
 inline void List<T>::delAll() {
 	ListNode<T>* iter = head;
-	while (iter->next != tail) {
+	while (iter->next != 0) {
 		ListNode<T>* tmp = iter;
 		iter = iter->next;
 		delete tmp;
@@ -251,6 +271,10 @@ template<typename T>
 inline void List<T>::makeCopy(const List<T>& list) {
 	len = list.len;
 	head = list.head;
+	if (len == 0){
+		tail = 0;
+		return;
+	}
 	ListNode<T>* li_iter = list.head;
 	ListNode<T>* iter = 0;
 	while (li_iter->next != list.tail) {
@@ -282,4 +306,10 @@ inline ListNode<T>* List<T>::searchKey(const T& key) {
 		iter = iter->next;
 	}
 	return 0;
+}
+
+
+template<typename T>
+inline ListIter<T> List<T>::iterator() {
+	return ListIter<T>(*this);
 }

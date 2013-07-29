@@ -26,8 +26,8 @@ struct ListNode{
 template <typename T>
 class ListIter{
 public:
-	ListIter(const List<T>& li);
-	ListIter(ListNode<T>& lin);
+	ListIter(List<T>& li);
+	ListIter(ListNode<T>* lin);
 	virtual ~ListIter();
 	inline bool hasNext();
 	inline bool hasPrev();
@@ -56,10 +56,11 @@ public:
 	void appendHead(ListNode<T>* li);
 	void insert(ListNode<T>* index,ListNode<T>* val);//insert the val at the position after index
 	bool insert(int index,ListNode<T>* val);
-	void del(ListNode<T>* index);
-	void del(int index);
+	bool del(ListNode<T>* index);
+	bool del(int index);
 	void delAll();
 	inline long size() const;
+	ListIter<T> iterator();
 	ListNode<T>* searchKey(const T& key);
 
 private:
@@ -69,4 +70,6 @@ private:
 	void makeCopy(const List<T> &list);
 	void kickOut(ListNode<T>* index);
 };
+
+
 #endif /* LIST_H_ */
