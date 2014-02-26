@@ -1,11 +1,14 @@
-//============================================================================
-// Name        : Neros.cpp
-// Author      : nekosama
-// Version     :
-// Copyright   : Your copyright notice
-// Description : Hello World in C++, Ansi-style
-//============================================================================
-
+/*=============================================================================
+#
+# Author: liangrui.hlr email:i@nyankosama.com
+#
+# Last modified:	2014-02-25 21:32
+#
+# Filename:		Main.cpp
+#
+# Description: 
+#
+=============================================================================*/
 #include <iostream>
 #include <string>
 #include "data/Strds.h"
@@ -58,5 +61,4 @@ int main() {
 	if(tmp != 0)
 		cout<<tmp->value<< endl;
 	printList(list);
-	ListNode<int>* node1 = list.searchKey(1);
 }
