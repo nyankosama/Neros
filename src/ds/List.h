@@ -1,10 +1,14 @@
-/*
- * List.h
- *	this is a list without commmon share nodes of other lists
- *  Created on: Jul 25, 2013
- *      Author: nekosama
- */
-
+/*=============================================================================
+#
+# Author: liangrui.hlr email:i@nyankosama.com
+#
+# Last modified:	2014-02-26 00:49
+#
+# Filename:		List.h
+#
+# Description: 
+#
+=============================================================================*/
 #ifndef LIST_H_
 #define LIST_H_
 template <typename T> class List;
@@ -70,6 +74,5 @@ private:
 	void makeCopy(const List<T> &list);
 	void kickOut(ListNode<T>* index);
 };
-
 
 #endif /* LIST_H_ */

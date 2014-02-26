@@ -1,12 +1,12 @@
 srcDir = './src'
-dataDir = srcDir+'/data'
+dataDir = srcDir+'/ds'
 
-SharedLibrary(target = 'lib/datastructure',
+StaticLibrary(target = 'datastructure',
         source = Glob(dataDir+'/*.cpp'),
         CPPPATH = dataDir)
 
 libs = Split('datastructure')
-libpath = './lib'
+libpath = './'
 
 Program(target = 'Neros',
         source = srcDir+'/Main.cpp',

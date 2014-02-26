@@ -1,12 +1,16 @@
-/*
- * List.cpp
- *
- *  Created on: Jul 25, 2013
- *      Author: nekosama
- */
-
-#include "List.h"
+/*=============================================================================
+#
+# Author: liangrui.hlr email:i@nyankosama.com
+#
+# Last modified:	2014-02-26 00:49
+#
+# Filename:		List.cpp
+#
+# Description: 
+#
+=============================================================================*/
 #include <iostream>
+#include "List.h"
 using namespace std;
 
 template<typename T>

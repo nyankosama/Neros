@@ -11,23 +11,11 @@
 =============================================================================*/
 #include <iostream>
 #include <string>
-#include "data/Strds.h"
-#include "data/List.h"
-#include "data/List.cpp"
 #include <stdio.h>
+#include "ds/Dstr.h"
+#include "ds/List.h"
+#include "ds/List.cpp"
 using namespace std;
-
-class T1{
-public:
-    static int a;
-};
-
-int T1::a = 1;
-
-class T2:public T1{
-public:
-    int b;
-};
 
 
 void printList(List<int>& list){
@@ -41,6 +29,11 @@ void printList(List<int>& list){
 
 
 int main() {
+    cout << "========" << endl;
+    Dstr str("123");
+    cout << str.getContent() << endl;
+    str.append("456");
+    cout <<str.getContent() << endl;
     cout << "========" << endl;
 
     List<int> list;
