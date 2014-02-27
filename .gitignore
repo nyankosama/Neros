@@ -19,6 +19,7 @@ makefile
 
 # scons files
 .sconsign.dblite
+*.os
 
 # eclipse settings
 .settings/
