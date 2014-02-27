@@ -36,11 +36,11 @@ namespace neros{
                     ListIter(List<T>& li);
                     ListIter(ListNode<T>* lin);
                     virtual ~ListIter();
-                    inline bool hasNext();
-                    inline bool hasPrev();
-                    inline T& val();
-                    inline T& next();
-                    inline T& prev();
+                    bool hasNext();
+                    bool hasPrev();
+                    T& val();
+                    T& next();
+                    T& prev();
                 private:
                     ListNode<T>* lin;
             };
@@ -48,8 +48,8 @@ namespace neros{
         template <typename T>
             class List {
                 public:
-                    inline List();
-                    inline virtual ~List();
+                    List();
+                    virtual ~List();
                     List(const List<T>& list);
                     List<T>& operator =(const List<T>& li);
                     int compare(const List<T>* li);
@@ -57,8 +57,8 @@ namespace neros{
                     ListNode<T>* popTail();
                     ListNode<T>* popAt(ListNode<T>* index);
                     ListNode<T>* popAt(int index);
-                    inline ListNode<T>* getHead();
-                    inline ListNode<T>* getTail();
+                    ListNode<T>* getHead();
+                    ListNode<T>* getTail();
                     void appendTail(ListNode<T>* li);//based on copy
                     void appendHead(ListNode<T>* li);
                     void insert(ListNode<T>* index,ListNode<T>* val);//insert the val at the position after index
@@ -66,7 +66,7 @@ namespace neros{
                     bool del(ListNode<T>* index);
                     bool del(int index);
                     void delAll();
-                    inline long size() const;
+                    long size() const;
                     ListIter<T> iterator();
                     ListNode<T>* searchKey(const T& key);
 

@@ -1,14 +1,16 @@
 srcDir = './src'
 dataDir = srcDir+'/ds'
 
-StaticLibrary(target = 'datastructure',
+env = Environment(CCFLAGS='-std=c++0x')
+
+env.StaticLibrary(target = 'datastructure',
         source = Glob(dataDir+'/*.cpp'),
         CPPPATH = dataDir)
 
 libs = Split('datastructure')
 libpath = './'
 
-Program(target = 'Neros',
+env.Program(target = 'Neros',
         source = srcDir+'/Main.cpp',
         LIBS=libs,
         LIBPATH=libpath,
