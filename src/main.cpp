@@ -12,11 +12,11 @@
 #include <iostream>
 #include <string>
 #include <stdio.h>
-#include "ds/Dstr.h"
-#include "ds/List.h"
-#include "ds/List.cpp"
+#include "base/list.h"
+#include "base/list.cpp"
+#include "base/string_data.h"
 using namespace std;
-using namespace neros::datautils;
+using namespace neros::base;
 
 
 void printList(List<int>& list){
@@ -30,13 +30,11 @@ void printList(List<int>& list){
 
 
 int main() {
-    cout << "========" << endl;
-    Dstr str("123");
-    cout << str.getContent() << endl;
-    str.append("456");
-    cout <<str.getContent() << endl;
-    cout << "========" << endl;
-
+    cout << "===============" << endl;
+    StringData data("123");
+    data.append("456");
+    cout << data.getContent() << endl;
+    cout << "===============" << endl;
     List<int> list;
     ListNode<int>* n1 = new ListNode<int>();
     ListNode<int>* n2 = new ListNode<int>();

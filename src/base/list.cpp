@@ -10,11 +10,11 @@
 #
 =============================================================================*/
 #include <iostream>
-#include "List.h"
+#include "list.h"
 using namespace std;
 
 namespace neros{
-    namespace datautils{
+    namespace base{
         template<typename T>
             inline ListIter<T>::ListIter(List<T>& li) {
                 lin = new ListNode<T>();

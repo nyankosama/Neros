@@ -1,5 +1,5 @@
 srcDir = './src'
-dataDir = srcDir+'/ds'
+dataDir = srcDir+'/base'
 
 env = Environment(CCFLAGS='-std=c++0x')
 
@@ -11,7 +11,7 @@ libs = Split('datastructure')
 libpath = './'
 
 env.Program(target = 'Neros',
-        source = srcDir+'/Main.cpp',
+        source = srcDir+'/main.cpp',
         LIBS=libs,
         LIBPATH=libpath,
         CPPPATH=dataDir)

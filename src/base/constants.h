@@ -13,6 +13,6 @@
 #define CONSTRANT_H_
 
 const int DEFAULT_FREE_LEN = 20;
-const int DSTR_MAX_PREALLOC = 1024 * 1024;
+const int STRING_DATA_MAX_PREALLOC = 1024 * 1024;
 
 #endif /* CONSTRANT_H_ */
