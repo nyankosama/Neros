@@ -16,7 +16,7 @@
 #include "base/list.cpp"
 #include "base/string_data.h"
 using namespace std;
-using namespace neros::base;
+using namespace sdis::base;
 
 
 void printList(List<int>& list){
@@ -29,12 +29,43 @@ void printList(List<int>& list){
 }
 
 
+void print_mem_as_int(char* cptr, int len){
+    for (int i=0; i<len; i++){
+        cout << (int)*cptr << endl;
+        cptr++;
+    }
+}
+
 int main() {
     cout << "===============" << endl;
-    StringData data("123");
-    data.append("456");
-    cout << data.getContent() << endl;
+    StringData data1("123");
+    data1.append("456");
+    cout << data1.rawData() << endl;
     cout << "===============" << endl;
+    
+    StringData data2;
+    data2.append("123");
+    cout << data2.rawData() << endl; 
+    print_mem_as_int(const_cast<char*>(data2.rawData()), 4);
+    cout << "===============" << endl;
+
+    StringData data3(5);
+    data3.append("12");
+    cout << data3.rawData() << endl;
+    print_mem_as_int(const_cast<char*>(data3.rawData()), 5);
+    cout << "===============" << endl;
+
+    StringData data4(2);
+    data4.append("1234");
+    cout << data4.rawData() << endl;    
+    print_mem_as_int(const_cast<char*>(data4.rawData()), 5);
+    cout << "===============" << endl;
+
+    StringData data5("123456");
+    StringData sub = data5.subStr(0, 112);
+    cout << sub.rawData() << endl;
+    cout << "===============" << endl;
+    /*
     List<int> list;
     ListNode<int>* n1 = new ListNode<int>();
     ListNode<int>* n2 = new ListNode<int>();
@@ -53,4 +84,5 @@ int main() {
     if(tmp != 0)
         cout<<tmp->value<< endl;
     printList(list);
+    */
 }

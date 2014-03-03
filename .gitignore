@@ -17,6 +17,9 @@
 *.d
 makefile
 
+#project settings
+sdis_ycm.*
+
 # scons files
 .sconsign.dblite
 *.os

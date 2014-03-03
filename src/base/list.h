@@ -12,7 +12,7 @@
 #ifndef BASE_LIST_H_
 #define BASE_LIST_H_
 
-namespace neros{
+namespace sdis{
     namespace base{
         template <typename T> class List;
         template <typename T> class ListIter;

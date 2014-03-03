@@ -13,7 +13,7 @@
 #include "list.h"
 using namespace std;
 
-namespace neros{
+namespace sdis{
     namespace base{
         template<typename T>
             inline ListIter<T>::ListIter(List<T>& li) {

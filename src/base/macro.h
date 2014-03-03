@@ -5,4 +5,7 @@
 TypeName(const TypeName&); \
 void operator=(const TypeName&)
 
+#define DISALLOW_ASSIGN(TypeName) \
+    void operator=(const TypeName&)
+
 #endif

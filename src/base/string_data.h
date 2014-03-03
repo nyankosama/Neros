@@ -7,13 +7,11 @@
 
 #ifndef BASE_STRING_DATA_H_
 #define BASE_STRING_DATA_H_
-#include <iostream>
 #include <string>
-#include "constants.h"
 #include "macro.h"
 using namespace std;
 
-namespace neros{
+namespace sdis{
     namespace base{
         class StringData {
             public:
@@ -29,7 +27,10 @@ namespace neros{
                 explicit StringData(const string& str);
 
                 explicit StringData(const string& str, size_t len);
-
+                
+                /*
+                 * notice: the string must be terminated with '\0'
+                 */
                 explicit StringData(const char* c);
 
                 explicit StringData(const char* c, size_t len);
@@ -37,21 +38,27 @@ namespace neros{
                 /*
                  * init StringData with special free buffer length and empty content
                  */
-                StringData(size_t len);
+                explicit StringData(size_t len);
+
+                /*copy constructor remains*/
+                StringData(const StringData& other){
+                    StringData(other._data, other._len);
+                }
                 virtual ~StringData();
-                size_t size();
-                int compare(const StringData& another);
-                void append(const string& append_str);
-                void append(const StringData& another);
-                StringData subStr(size_t start_pos = 0, size_t end_pos = -1);
-                string getContent() const;
+                size_t size() const;
+                int compare(const StringData& other) const;
+                StringData& append(const char* append_str, size_t len = 0);
+                StringData& append(const StringData& another);
+                StringData subStr(size_t start_pos, size_t len) const;
+                string toString() const;
+                const char* rawData() const {return _data;}
 
             private:
                 size_t _len;
                 size_t _free;
                 char* _data;
                 void makeRoomForAppend(size_t required_len);
-                DISALLOW_COPY_AND_ASSIGN(StringData); 
+                DISALLOW_ASSIGN(StringData);
         };
 
     }
