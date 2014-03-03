@@ -5,8 +5,8 @@
  *      Author: nekosama
  */
 
-#ifndef StringData_H_
-#define StringData_H_
+#ifndef BASE_STRING_DATA_H_
+#define BASE_STRING_DATA_H_
 #include <iostream>
 #include <string>
 #include "constants.h"

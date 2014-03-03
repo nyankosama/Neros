@@ -9,8 +9,8 @@
 # Description: 
 #
 =============================================================================*/
-#ifndef CONSTRANT_H_
-#define CONSTRANT_H_
+#ifndef BASE_CONSTRANT_H_
+#define BASE_CONSTRANT_H_
 
 const int DEFAULT_FREE_LEN = 20;
 const int STRING_DATA_MAX_PREALLOC = 1024 * 1024;

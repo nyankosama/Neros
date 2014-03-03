@@ -9,8 +9,8 @@
 # Description: 
 #
 =============================================================================*/
-#ifndef LIST_H_
-#define LIST_H_
+#ifndef BASE_LIST_H_
+#define BASE_LIST_H_
 
 namespace neros{
     namespace base{
