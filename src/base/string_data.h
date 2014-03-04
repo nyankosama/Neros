@@ -47,7 +47,7 @@ namespace lightdis{
 
                 virtual ~StringData();
 
-                size_t size() const;
+                size_t size() const{return _len;}
 
                 int compare(const StringData& other) const;
 
@@ -61,7 +61,8 @@ namespace lightdis{
 
                 void copyTo(char* dest, bool include_ending_null) const;
 
-                string toString() const;
+                string toString() const{return string(_data);}
+
                 const char* rawData() const {return _data;}
 
             private:
