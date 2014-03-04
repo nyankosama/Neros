@@ -2,12 +2,14 @@
 #define BASE_STRING_DATA_INL_H_ 
 
 #include <cstring>
+#include <string>
 #include "base/string_data.h"
 #include "base/constants.h"
 
 //for unittest
 #include "unittest/unittest_util.h"
 namespace test = lightdis::unittest;
+
 
 namespace lightdis{
     namespace base{
@@ -51,9 +53,9 @@ namespace lightdis{
             }
         }
 
-        
+
         inline StringData StringData::subStr(size_t start_pos, size_t len) const {
-            if (len > _len){
+            if (len > _len || len == string::npos){
                 return StringData(_data + start_pos, _len);
             }
             else{
@@ -61,7 +63,7 @@ namespace lightdis{
             }
         }
 
-        
+
         inline void StringData::makeRoomForAppend(size_t required_len){
             if (_free >= required_len)
                 return;
@@ -79,6 +81,81 @@ namespace lightdis{
             _data = tmp;
             _free = newlen - _len;
         }       
+
+        inline size_t StringData::find(char c, size_t from_pos) const {
+            if (from_pos >= _len){
+                return string::npos;
+            }
+
+            const void* x = memchr(_data + from_pos, c, _len - from_pos);
+            if (x == NULL){
+                return string::npos;
+            }
+
+            return static_cast<size_t>( static_cast<const char*>(x) - _data);
+        }
+
+
+        inline size_t StringData::find(const StringData& needle) const{
+            size_t mx = _len;
+            size_t needle_size = needle.size();
+
+            if (needle_size == 0){
+                return 0;
+            }
+            else if (needle_size > mx){
+                return string::npos;
+            }
+
+            mx -= needle_size;
+
+            //TODO performance problem, string find algorithm can be replaced with KMP
+            for (size_t i = 0; i <= mx; i++){
+                if (memcmp(_data + i, needle._data, needle_size) == 0){
+                    return i;
+                }
+            }
+            return string::npos;
+        }
+
+        inline size_t StringData::rfind(char c, size_t from_pos) const{
+            if (from_pos >= _len){
+                from_pos = _len;
+            }
+
+            const void* x = memchr(_data + from_pos, c, _len - from_pos);
+            if (x == NULL){
+                return string::npos;
+            }
+
+            for ( const char* cur = _data + from_pos; cur > _data; --cur ) {
+                if ( *(cur - 1) == c )
+                    return (cur - _data) - 1;
+            }
+            return string::npos;
+        }
+
+        inline bool StringData::equals(const StringData& other) const{
+            if (compare(other) == 0)
+                return true;
+            else
+                return false;
+        }
+
+        inline bool StringData::startsWith(const StringData& prefix) const{
+            return subStr(0, prefix.size()).equals(prefix);
+        }
+
+        inline bool StringData::endsWith(const StringData& suffix) const{
+            const size_t this_size = _len;
+            const size_t suffix_size = suffix.size();
+            if (suffix_size > this_size){
+                return false;
+            }
+
+            return subStr(this_size - suffix_size).equals(suffix);
+        }
+
     }
 }
 

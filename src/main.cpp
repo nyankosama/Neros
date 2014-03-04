@@ -39,13 +39,11 @@ void print_mem_as_int(char* cptr, int len){
 int main() {
     cout << "===============" << endl;
     StringData data1("123");
-    data1.append("456");
-    cout << data1.rawData() << endl;
+    StringData data2("123");
+    cout << data1.startsWith(data2) << endl;
+    cout << data1.endsWith(data2) << endl;
+    cout << data1.equals(data2) << endl;
     cout << "===============" << endl;
-
-    char* dest = new char[10];
-    data1.copyTo(dest, true);
-    cout << dest << endl;
     
     /*
     List<int> list;

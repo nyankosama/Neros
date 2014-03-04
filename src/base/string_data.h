@@ -57,13 +57,34 @@ namespace lightdis{
                 StringData& append(const char* append_str, size_t len = 0);
                 StringData& append(const StringData& another);
 
-                StringData subStr(size_t start_pos, size_t len) const;
+                StringData subStr(size_t start_pos, size_t len = string::npos) const;
 
                 void copyTo(char* dest, bool include_ending_null) const;
+
+                size_t find(char c, size_t from_pos = 0) const;
+                
+                size_t find(const StringData& needle) const;
+
+                size_t rfind(char c, size_t from_pos = string::npos) const;
+
+                bool startsWith(const StringData& prefix) const;
+
+                bool endsWith(const StringData& suffix) const;
+
+                bool empty() const {return _len == 0; }
+
+                bool equals(const StringData& other) const;
 
                 string toString() const{return string(_data);}
 
                 const char* rawData() const {return _data;}
+
+                //iterators
+                typedef const char* const_iterator;
+
+                const_iterator begin() const {return _data; }
+
+                const_iterator end() const {return _data + _len; }
 
             private:
                 size_t _len;
