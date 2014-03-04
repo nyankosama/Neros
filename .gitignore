@@ -18,7 +18,7 @@
 makefile
 
 #project settings
-sdis_ycm.*
+lightdis_ycm.*
 
 # scons files
 .sconsign.dblite
