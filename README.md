@@ -1,4 +1,5 @@
-Neros
+lightdis
 =====
 
-a simple rewrite version of redis with addition of some new datastructures and functions
+yet another key/value database
+lightdis = light dictionary server
