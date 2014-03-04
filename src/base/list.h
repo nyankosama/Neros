@@ -12,7 +12,7 @@
 #ifndef BASE_LIST_H_
 #define BASE_LIST_H_
 
-namespace sdis{
+namespace lightdis{
     namespace base{
         template <typename T> class List;
         template <typename T> class ListIter;

@@ -9,7 +9,7 @@
 
 using namespace std;
 
-namespace sdis{
+namespace lightdis{
     namespace unittest{
 
         /*

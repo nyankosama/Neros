@@ -13,9 +13,9 @@
 
 //for unittest
 #include "unittest/unittest_util.h"
-namespace test = sdis::unittest;
+namespace test = lightdis::unittest;
 
-namespace sdis{
+namespace lightdis{
     namespace base{
         StringData::StringData() {
             test::echo("none-para constru");
@@ -79,6 +79,8 @@ namespace sdis{
             }
             makeRoomForAppend(len);
             memcpy(_data+_len, app_str, len+1);
+            _len += len;
+            _free -= len;
             return *this;
         }
 

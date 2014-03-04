@@ -16,7 +16,7 @@
 #include "base/list.cpp"
 #include "base/string_data.h"
 using namespace std;
-using namespace sdis::base;
+using namespace lightdis::base;
 
 
 void printList(List<int>& list){
@@ -42,29 +42,11 @@ int main() {
     data1.append("456");
     cout << data1.rawData() << endl;
     cout << "===============" << endl;
+
+    char* dest = new char[10];
+    data1.copyTo(dest, true);
+    cout << dest << endl;
     
-    StringData data2;
-    data2.append("123");
-    cout << data2.rawData() << endl; 
-    print_mem_as_int(const_cast<char*>(data2.rawData()), 4);
-    cout << "===============" << endl;
-
-    StringData data3(5);
-    data3.append("12");
-    cout << data3.rawData() << endl;
-    print_mem_as_int(const_cast<char*>(data3.rawData()), 5);
-    cout << "===============" << endl;
-
-    StringData data4(2);
-    data4.append("1234");
-    cout << data4.rawData() << endl;    
-    print_mem_as_int(const_cast<char*>(data4.rawData()), 5);
-    cout << "===============" << endl;
-
-    StringData data5("123456");
-    StringData sub = data5.subStr(0, 112);
-    cout << sub.rawData() << endl;
-    cout << "===============" << endl;
     /*
     List<int> list;
     ListNode<int>* n1 = new ListNode<int>();

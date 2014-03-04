@@ -10,7 +10,7 @@ env.StaticLibrary(target = 'datastructure',
 libs = Split('datastructure')
 libpath = './'
 
-env.Program(target = 'sdis',
+env.Program(target = 'lightdis',
         source = srcDir+'/main.cpp',
         LIBS=libs,
         LIBPATH=libpath,

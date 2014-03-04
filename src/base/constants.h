@@ -12,7 +12,7 @@
 #ifndef BASE_CONSTRANT_H_
 #define BASE_CONSTRANT_H_
 
-namespace sdis{
+namespace lightdis{
     namespace base{
 
         const int DEFAULT_FREE_LEN = 20;

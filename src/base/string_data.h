@@ -11,7 +11,7 @@
 #include "macro.h"
 using namespace std;
 
-namespace sdis{
+namespace lightdis{
     namespace base{
         class StringData {
             public:
@@ -44,12 +44,23 @@ namespace sdis{
                 StringData(const StringData& other){
                     StringData(other._data, other._len);
                 }
+
                 virtual ~StringData();
+
                 size_t size() const;
+
                 int compare(const StringData& other) const;
+
+                /*
+                 *notice: if the parameter len is not passed from the caller, the append_str must be terminated with '\0'
+                 */
                 StringData& append(const char* append_str, size_t len = 0);
                 StringData& append(const StringData& another);
+
                 StringData subStr(size_t start_pos, size_t len) const;
+
+                void copyTo(char* dest, bool include_ending_null) const;
+
                 string toString() const;
                 const char* rawData() const {return _data;}
 
@@ -64,4 +75,5 @@ namespace sdis{
     }
 }
 
+#include "base/string_data_inl.h"
 #endif /* StringData_H_ */
