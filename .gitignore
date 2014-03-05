@@ -17,6 +17,9 @@
 *.d
 makefile
 
+#binary files
+lightdis
+
 #project settings
 lightdis_ycm.*
 
