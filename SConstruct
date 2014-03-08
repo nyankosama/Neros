@@ -15,3 +15,9 @@ env.Program(target = 'lightdis',
         LIBS=libs,
         LIBPATH=libpath,
         CPPPATH=srcDir)
+
+env.Program(target = "unittest",
+        source = srcDir+'/unittest/unittest_example.cpp',
+        LIBS=libs,
+        LIBPATH=libpath,
+        CPPPATH=srcDir)
