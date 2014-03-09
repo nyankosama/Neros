@@ -27,7 +27,7 @@ namespace lightdis{
                 explicit StringData(const string& str);
 
                 explicit StringData(const string& str, size_t len);
-                
+
                 /*
                  * notice: the string must be terminated with '\0'
                  */
@@ -62,7 +62,7 @@ namespace lightdis{
                 void copyTo(char* dest, bool include_ending_null) const;
 
                 size_t find(char c, size_t from_pos = 0) const;
-                
+
                 size_t find(const StringData& needle) const;
 
                 size_t rfind(char c, size_t from_pos = string::npos) const;
@@ -86,6 +86,8 @@ namespace lightdis{
 
                 const_iterator end() const {return _data + _len; }
 
+
+
             private:
                 size_t _len;
                 size_t _free;
@@ -93,6 +95,33 @@ namespace lightdis{
                 void makeRoomForAppend(size_t required_len);
                 DISALLOW_ASSIGN(StringData);
         };
+
+
+        inline bool operator==(const StringData& lhs, const StringData& rhs) {
+            return lhs.compare(rhs) == 0;
+        }
+
+        inline bool operator!=(const StringData& lhs, const StringData& rhs) {
+            return lhs.compare(rhs) != 0;
+        }
+
+        inline bool operator<(const StringData& lhs, const StringData& rhs) {
+            return lhs.compare(rhs) < 0 ;
+        }
+
+        inline bool operator<=(const StringData& lhs, const StringData& rhs) {
+            return lhs.compare(rhs) <= 0;
+        }
+
+        inline bool operator>(const StringData& lhs, const StringData& rhs) {
+            return lhs.compare(rhs) > 0;
+        }
+
+        inline bool operator>=(const StringData& lhs, const StringData& rhs) {
+            return lhs.compare(rhs) >= 0;
+        }
+
+        ostream& operator<< (std::ostream& stream, const StringData& value);
 
     }
 }

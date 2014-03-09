@@ -63,5 +63,9 @@ namespace lightdis{
             _data = new char[free + 1];
             _data[0]='\0';
         }
+
+        ostream& operator<<(std::ostream& stream, const StringData& value) {
+            return stream.write(value.rawData(), value.size());
+        }
     }
 }   

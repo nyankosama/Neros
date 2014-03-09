@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 #include <iostream>
-
 #include "base/Singleton.h"
+#include "unittest/unittest_util.h"
 using namespace std;
 
 #define TEST_START() \
@@ -26,7 +26,22 @@ using namespace std;
 
 #define _TEST_TYPE_NAME(SUITE_NAME, TEST_NAME) UnitTest_##SUITE_NAME##_##TEST_NAME
 
+/**
+ * Assertions
+ */
 
+/**
+ * Binary comparison assertions.
+ */
+#define ASSERT_EQUALS(a,b) _ASSERT_COMPARISON(Equal, a, b)
+#define ASSERT_NOT_EQUALS(a,b) _ASSERT_COMPARISON(NotEqual, a, b)
+#define ASSERT_LESS_THAN(a,b) _ASSERT_COMPARISON(LessThan, a, b)
+#define ASSERT_GREATER_THAN(a,b) _ASSERT_COMPARISON(GreaterThan, a, b)
+#define ASSERT_NOT_LESS_THAN(a,b) _ASSERT_COMPARISON(NotLessThan, a, b)
+#define ASSERT_NOT_GREATER_THAN(a,b) _ASSERT_COMPARISON(NotGreaterThan, a, b)
+
+#define _ASSERT_COMPARISON(COMPARISON, a, b) ::lightdis::unittest::ComparisonAssertion( \
+    #a, #b, __FILE__, __LINE__ ).assert##COMPARISON( (a), (b))
 
 
 namespace lightdis{
@@ -77,6 +92,71 @@ namespace lightdis{
         };
 
         SuiteManager* SuiteManager::_instance = new SuiteManager();
+
+        class TestAssertion{
+            protected:
+                TestAssertion(const char* file, unsigned line):_file(file),_line(line){}
+                void fail(const string& msg);
+            private:
+                const char* _file;
+                const unsigned _line;
+        
+        };
+
+        class ComparisonAssertion : public TestAssertion{
+            public:
+                ComparisonAssertion(const char* aexp, const char* bexp,
+                                    const char* file, unsigned line):TestAssertion(file, line),_aexp(aexp),_bexp(bexp){}
+
+                template<typename A, typename B>
+                void assertEqual(const A& a, const B& b){
+                    if (a == b) 
+                        return;
+                    fail(getFailMessage("==", a, b));
+                }
+
+                template<typename A, typename B>
+                void assertNotEqual(const A& a, const B& b){
+                    if (a != b)
+                        return;
+                    fail(getFailMessage("!=", a, b));
+                }
+
+                template<typename A, typename B>
+                void assertLessThan(const A& a, const B& b){
+                    if (a < b)
+                        return;
+                    fail(getFailMessage("<", a, b));
+                }
+
+                template<typename A, typename B>
+                void assertGreaterThan(const A& a, const B& b){
+                    if (a > b)
+                        return;
+                    fail(getFailMessage(">", a, b));
+                }
+
+                template<typename A, typename B>
+                void assertNotLessThan(const A& a, const B& b){
+                    if (a >= b)
+                        return;
+                    fail(getFailMessage(">=", a, b));
+                }
+                
+                template<typename A, typename B>
+                void assertNotGreaterThan(const A& a, const B& b){
+                    if (a <= b)
+                        return;
+                    fail(getFailMessage("<=", a, b));
+                }
+
+ 
+            private:
+                template<typename A, typename B>
+                string getFailMessage(const string& operation, A& a, B& b);
+                const char* _aexp;
+                const char* _bexp;
+        };
 
     }
 }

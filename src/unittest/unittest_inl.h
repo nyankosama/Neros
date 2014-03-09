@@ -1,5 +1,6 @@
 #include "unittest/unittest.h"
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -42,6 +43,21 @@ namespace lightdis{
                 (*iter)->run();
             }
         }
+
+        void TestAssertion::fail(const string& msg){
+            cout << "Assertion fail at line=" << _line << ", file=" << _file
+                << ", msg=" << msg;
+             
+            cout << endl;
+        }
+
+        template<typename A, typename B>
+        string ComparisonAssertion::getFailMessage(const string& operation, A& a, B& b){
+            ostringstream os;
+            os << "Expected " << _aexp << " " << operation << " " << _bexp
+                << " (" << a << " " << operation << " " << b << ")";
+            return os.str();
+        }        
     }
 }
 
