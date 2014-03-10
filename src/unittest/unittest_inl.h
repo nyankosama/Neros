@@ -13,14 +13,38 @@ namespace lightdis{
             SuiteManager::get()->getSuiteHolder(suite_name).registeTestHolder(testObj);
         }       
 
+        template <typename T>
+        SuiteHolder::HandlerRegistrationAgent<T>::HandlerRegistrationAgent(const string& suite_name, const string& type){
+            T* handler = new T();
+            SuiteHolder& suite_holder = SuiteManager::get()->getSuiteHolder(suite_name);
+            //TODO ugly implement!!!
+            if (type == "BEFORE"){
+                suite_holder.setBefore(handler);
+            }
+            else if(type == "AFTER"){
+                suite_holder.setAfter(handler);
+            }
+            else if(type == "SETUP"){
+                suite_holder.setSetup(handler) ;
+            }
+            else if(type == "TEAR_DOWN"){
+                suite_holder.setTeardown(handler); 
+            }
+            
+        }
+
         void SuiteHolder::registeTestHolder(TestHolder* holder){
             _test_holder_list.push_back(holder);
         }
 
         void SuiteHolder::run(){
+            _setup->handle();
             for(vector<TestHolder*>::iterator iter = _test_holder_list.begin(); iter != _test_holder_list.end(); ++iter){
+                _before->handle();
                 (*iter)->doTest();
+                _after->handle();
             }
+            _tear_down->handle();
         }
 
         SuiteHolder& SuiteManager::getSuiteHolder(const string& suite_name){

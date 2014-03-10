@@ -43,6 +43,18 @@ using namespace std;
 #define _ASSERT_COMPARISON(COMPARISON, a, b) ::lightdis::unittest::ComparisonAssertion( \
     #a, #b, __FILE__, __LINE__ ).assert##COMPARISON( (a), (b))
 
+#define SUITE_TRIGGER(SUITE_NAME, TYPE) \
+    class _SUITE_AGENT_NAME(SUITE_NAME, TYPE) : public ::lightdis::unittest::SuiteHolder::SuiteHandlerAgent { \
+        virtual void handle(); \
+        static const ::lightdis::unittest::SuiteHolder::HandlerRegistrationAgent<_SUITE_AGENT_NAME(SUITE_NAME, TYPE)> _agent; \
+    }; \
+    const ::lightdis::unittest::SuiteHolder::HandlerRegistrationAgent<_SUITE_AGENT_NAME(SUITE_NAME, TYPE)> _SUITE_AGENT_NAME(SUITE_NAME, TYPE)::_agent(#SUITE_NAME, #TYPE); \
+    void _SUITE_AGENT_NAME(SUITE_NAME, TYPE)::handle()
+    
+#define _SUITE_AGENT_NAME(SUITE_NAME, AGENT_TYPE) \
+        SuiteHandlerAgent_##SUITE_NAME##_##AGENT_TYPE
+
+
 
 namespace lightdis{
     namespace unittest{
@@ -62,21 +74,40 @@ namespace lightdis{
                 };
         };
 
-
         class SuiteHolder{
             public:
-                SuiteHolder(const string& name):_suite_name(name){}
-                virtual void before(){}
-                virtual void after(){}
-                virtual void setup(){}
-                virtual void tearDown(){}
+                class SuiteHandlerAgent;
+                SuiteHolder(const string& name):
+                              _suite_name(name),
+                              _before(new SuiteHandlerAgent()),
+                              _after(new SuiteHandlerAgent()),
+                              _setup(new SuiteHandlerAgent()),
+                              _tear_down(new SuiteHandlerAgent()){}
 
                 void registeTestHolder(TestHolder* holder);
                 void run();
+                void setBefore(SuiteHandlerAgent* agent){_before = agent;}
+                void setAfter(SuiteHandlerAgent* agent){_after = agent;}
+                void setSetup(SuiteHandlerAgent* agent){_setup = agent;}
+                void setTeardown(SuiteHandlerAgent* agent){_tear_down = agent;}
                 string getName(){return _suite_name;}
+                class SuiteHandlerAgent{
+                    public:
+                        virtual void handle(){}
+                };
+
+                template <typename T>
+                class HandlerRegistrationAgent{
+                    public:
+                        HandlerRegistrationAgent(const string& suite_name, const string& type);
+                };
             private:
                 string _suite_name;
                 vector<TestHolder*> _test_holder_list;
+                SuiteHandlerAgent* _before;
+                SuiteHandlerAgent* _after;
+                SuiteHandlerAgent* _setup;
+                SuiteHandlerAgent* _tear_down;
         };
 
 
@@ -89,6 +120,7 @@ namespace lightdis{
             private:
                 vector<SuiteHolder*> _suite_holder_list;
                 static SuiteManager* _instance;
+
         };
 
         SuiteManager* SuiteManager::_instance = new SuiteManager();
