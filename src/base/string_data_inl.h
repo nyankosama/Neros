@@ -6,10 +6,6 @@
 #include "base/string_data.h"
 #include "base/constants.h"
 
-//for unittest
-#include "unittest/unittest_util.h"
-namespace test = lightdis::unittest;
-
 
 namespace lightdis{
     namespace base{
@@ -34,7 +30,6 @@ namespace lightdis{
         }
 
         inline StringData& StringData::append(const StringData& another) {
-            test::echo("append string_data");
             append(another._data);
             return *this;
         }
@@ -56,9 +51,11 @@ namespace lightdis{
 
         inline StringData StringData::subStr(size_t start_pos, size_t len) const {
             if (len > _len || len == string::npos){
-                return StringData(_data + start_pos, _len);
+                return StringData(_data + start_pos, _len - start_pos);
             }
             else{
+                if (len > _len - start_pos)
+                    len = _len - start_pos;
                 return StringData(_data + start_pos, len);
             }
         }
@@ -123,11 +120,6 @@ namespace lightdis{
                 from_pos = _len;
             }
 
-            const void* x = memchr(_data + from_pos, c, _len - from_pos);
-            if (x == NULL){
-                return string::npos;
-            }
-
             for ( const char* cur = _data + from_pos; cur > _data; --cur ) {
                 if ( *(cur - 1) == c )
                     return (cur - _data) - 1;
@@ -152,7 +144,6 @@ namespace lightdis{
             if (suffix_size > this_size){
                 return false;
             }
-
             return subStr(this_size - suffix_size).equals(suffix);
         }
 

@@ -48,6 +48,7 @@ namespace lightdis{
             _tear_down->handle();
         }
 
+
         SuiteHolder& SuiteManager::getSuiteHolder(const string& suite_name){
             SuiteHolder* holder = NULL;
             for (vector<SuiteHolder*>::iterator iter = _suite_holder_list.begin(); iter != _suite_holder_list.end(); ++iter){
@@ -72,6 +73,7 @@ namespace lightdis{
         }
 
         void TestAssertion::fail(const string& msg){
+            cout << "ASSERTION FAIL!###################" << endl;
             cout << "Assertion fail at line=" << _line << ", file=" << _file
                 << ", msg=" << msg;
              

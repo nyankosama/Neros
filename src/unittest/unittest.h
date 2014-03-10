@@ -91,6 +91,8 @@ namespace lightdis{
                 void setSetup(SuiteHandlerAgent* agent){_setup = agent;}
                 void setTeardown(SuiteHandlerAgent* agent){_tear_down = agent;}
                 string getName(){return _suite_name;}
+                int getSize(){return _test_holder_list.size();}
+                int getFailNum();
                 class SuiteHandlerAgent{
                     public:
                         virtual void handle(){}
@@ -132,7 +134,6 @@ namespace lightdis{
             private:
                 const char* _file;
                 const unsigned _line;
-        
         };
 
         class ComparisonAssertion : public TestAssertion{

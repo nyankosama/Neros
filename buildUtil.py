@@ -1,16 +1,6 @@
 
 def isCppFile(fileName):
-    try:
-        fileName.index(".cpp")
-    except Exception, e:
-        return False
-
-    return True
+    return fileName.endswith(".cpp")
 
 def isTestFile(fileName):
-    try:
-        fileName.index("_TEST__")
-    except Exception, e:
-        return False
-
-    return True
+    return fileName.startswith("_TEST__")
