@@ -38,6 +38,7 @@ namespace lightdis{
         }
 
         void SuiteHolder::run(){
+            cout << "**********" << _suite_name << "**********" << endl;
             _setup->handle();
             for(vector<TestHolder*>::iterator iter = _test_holder_list.begin(); iter != _test_holder_list.end(); ++iter){
                 _before->handle();
@@ -63,9 +64,11 @@ namespace lightdis{
         }
 
         void SuiteManager::run(){
+            cout << "==============TEST START============" << endl;
             for (vector<SuiteHolder*>::iterator iter = _suite_holder_list.begin(); iter != _suite_holder_list.end(); ++iter){
                 (*iter)->run();
             }
+            cout << "==============TEST END==============" << endl;
         }
 
         void TestAssertion::fail(const string& msg){

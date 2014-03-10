@@ -1,5 +1,9 @@
+import os
+import buildUtil as util
+
 srcDir = './src'
 dataDir = srcDir+'/base'
+testDir = srcDir + '/test'
 
 env = Environment(CCFLAGS='-std=c++0x -g')
 
@@ -23,3 +27,23 @@ env.Program(target = "unittest",
         CPPPATH=srcDir)
 
 
+#build and run the unittest cases
+testSrcList = os.listdir(testDir)
+for fileName in testSrcList:
+    if util.isCppFile(fileName) is not True:
+        continue
+
+    env.Program(target = testDir + os.path.sep + "_TEST__" + fileName[: fileName.index(".cpp")],
+            source = testDir + os.path.sep + fileName,
+            LIBS=libs,
+            LIBPATH=libpath,
+            CPPPATH=srcDir)
+
+def runTest(target, source, env):
+    testList = os.listdir(testDir)
+    for fileName in testList:
+        if util.isTestFile(fileName) == True:
+            os.system(testDir + os.path.sep + fileName)
+
+test = Command('test', [], runTest)
+Depends(test, DEFAULT_TARGETS)

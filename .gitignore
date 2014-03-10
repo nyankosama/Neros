@@ -23,6 +23,9 @@ lightdis
 #project settings
 lightdis_ycm.*
 
+#pyc files
+*.pyc
+
 # scons files
 .sconsign.dblite
 *.os
