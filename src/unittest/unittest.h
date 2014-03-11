@@ -26,6 +26,18 @@ using namespace std;
 
 #define _TEST_TYPE_NAME(SUITE_NAME, TEST_NAME) UnitTest_##SUITE_NAME##_##TEST_NAME
 
+
+#define SUITE_TRIGGER(SUITE_NAME, TYPE) \
+    class _SUITE_AGENT_NAME(SUITE_NAME, TYPE) : public ::lightdis::unittest::SuiteHolder::SuiteHandlerAgent { \
+        virtual void handle(); \
+        static const ::lightdis::unittest::SuiteHolder::HandlerRegistrationAgent<_SUITE_AGENT_NAME(SUITE_NAME, TYPE)> _agent; \
+    }; \
+    const ::lightdis::unittest::SuiteHolder::HandlerRegistrationAgent<_SUITE_AGENT_NAME(SUITE_NAME, TYPE)> _SUITE_AGENT_NAME(SUITE_NAME, TYPE)::_agent(#SUITE_NAME, #TYPE); \
+    void _SUITE_AGENT_NAME(SUITE_NAME, TYPE)::handle()
+    
+#define _SUITE_AGENT_NAME(SUITE_NAME, AGENT_TYPE) \
+        SuiteHandlerAgent_##SUITE_NAME##_##AGENT_TYPE
+
 /**
  * Assertions
  */
@@ -42,17 +54,6 @@ using namespace std;
 
 #define _ASSERT_COMPARISON(COMPARISON, a, b) ::lightdis::unittest::ComparisonAssertion( \
     #a, #b, __FILE__, __LINE__ ).assert##COMPARISON( (a), (b))
-
-#define SUITE_TRIGGER(SUITE_NAME, TYPE) \
-    class _SUITE_AGENT_NAME(SUITE_NAME, TYPE) : public ::lightdis::unittest::SuiteHolder::SuiteHandlerAgent { \
-        virtual void handle(); \
-        static const ::lightdis::unittest::SuiteHolder::HandlerRegistrationAgent<_SUITE_AGENT_NAME(SUITE_NAME, TYPE)> _agent; \
-    }; \
-    const ::lightdis::unittest::SuiteHolder::HandlerRegistrationAgent<_SUITE_AGENT_NAME(SUITE_NAME, TYPE)> _SUITE_AGENT_NAME(SUITE_NAME, TYPE)::_agent(#SUITE_NAME, #TYPE); \
-    void _SUITE_AGENT_NAME(SUITE_NAME, TYPE)::handle()
-    
-#define _SUITE_AGENT_NAME(SUITE_NAME, AGENT_TYPE) \
-        SuiteHandlerAgent_##SUITE_NAME##_##AGENT_TYPE
 
 
 

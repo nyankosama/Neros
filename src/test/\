@@ -6,20 +6,14 @@ using namespace std;
 
 namespace lightdis{
     namespace base{
-        //init data
-        StringData* str1 = NULL;
-
-        SUITE_TRIGGER(STRING_DATA, BEFORE){
-            str1 = new StringData("123");
-        }
-
-        SUITE_TRIGGER(STRING_DATA, AFTER){
-            delete str1;
+        namespace init{
+            StringData str1("123");
         }
 
         TEST(STRING_DATA, CONSTRUCTOR_1){
-            ASSERT_EQUALS(str1->toString(), "123");
-            ASSERT_EQUALS(str1->size(), 3);
+            StringData str1("123");
+            ASSERT_EQUALS(str1.toString(), "123");
+            ASSERT_EQUALS(str1.size(), 3);
         } 
 
         TEST(STRING_DATA, CONSTRUCTOR_2){
@@ -64,8 +58,6 @@ namespace lightdis{
 
         TEST(STRING_DATA, subStr){
             StringData str("12345");
-            StringData str1 = str.subStr(0);
-            ASSERT_EQUALS(str1.toString(), str.toString());
             ASSERT_EQUALS(str.subStr(0, 2).toString(), "12");
             ASSERT_EQUALS(str.subStr(0).toString(), "12345");
             ASSERT_EQUALS(str.subStr(2).toString(), "345");
