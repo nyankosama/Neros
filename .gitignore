@@ -26,6 +26,9 @@ lightdis_ycm.*
 #pyc files
 *.pyc
 
+#vim files
+*.swp
+
 # scons files
 .sconsign.dblite
 *.os
