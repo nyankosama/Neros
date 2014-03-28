@@ -2,9 +2,9 @@
 #
 # Author: liangrui.hlr email:i@nyankosama.com
 #
-# Last modified:	2014-02-26 00:49
+# Last modified:	2014-03-28 07:32
 #
-# Filename:		List.h
+# Filename:		list.h
 #
 # Description: 
 #
@@ -71,7 +71,6 @@ namespace lightdis{
                     ListNode* _head;
                     ListNode* _tail;
                     size_t _len;
-                    void makeCopy(const List<T> &list);
                     void remove(ListNode* node);
                     DISALLOW_ASSIGN(List);
             };

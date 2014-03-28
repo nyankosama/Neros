@@ -2,9 +2,9 @@
 #
 # Author: liangrui.hlr email:i@nyankosama.com
 #
-# Last modified:	2014-02-26 00:49
+# Last modified:	2014-03-28 07:34
 #
-# Filename:		List.cpp
+# Filename:		list.cpp
 #
 # Description: 
 #
@@ -82,14 +82,28 @@ namespace lightdis{
 
         template<typename T>
             inline List<T>::List(const List<T>& list) {
-                makeCopy(list);
-            }
+                len = list.len;
+                head = list.head;
+                if (len == 0){
+                    tail = 0;
+                    return;
+                }
+                ListNode<T>* li_iter = list.head;
+                ListNode<T>* iter = 0;
+                while (li_iter->next != list.tail) {
+                    iter = new ListNode<T>;
+                    if (iter == list.head)
+                        iter->prev = 0;
+                    iter->next = li_iter->next;
+                    iter->next->prev = iter;
+                    iter->value = li_iter->value;
+                    li_iter = li_iter->next;
+                    iter = iter->next;
+                }
+                tail = iter;
+                iter->next = 0;
+                iter->value = li_iter->value;
 
-        template<typename T>
-            inline List<T>& List<T>::operator =(const List<T>& li) {
-                delAll();
-                makeCopy(li);
-                return *this;
             }
 
         template<typename T>
@@ -273,30 +287,6 @@ namespace lightdis{
                 len = 0;
             }
 
-        template<typename T>
-            inline void List<T>::makeCopy(const List<T>& list) {
-                len = list.len;
-                head = list.head;
-                if (len == 0){
-                    tail = 0;
-                    return;
-                }
-                ListNode<T>* li_iter = list.head;
-                ListNode<T>* iter = 0;
-                while (li_iter->next != list.tail) {
-                    iter = new ListNode<T>;
-                    if (iter == list.head)
-                        iter->prev = 0;
-                    iter->next = li_iter->next;
-                    iter->next->prev = iter;
-                    iter->value = li_iter->value;
-                    li_iter = li_iter->next;
-                    iter = iter->next;
-                }
-                tail = iter;
-                iter->next = 0;
-                iter->value = li_iter->value;
-            }
 
         template<typename T>
             inline long List<T>::size() const {
