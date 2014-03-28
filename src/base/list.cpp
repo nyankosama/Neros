@@ -134,7 +134,7 @@ namespace lightdis{
 
         template<typename T>
             inline ListNode<T>* List<T>::popAt(ListNode<T>* index) {
-                kickOut(index);
+                remove(index);
                 len--;
                 return index;
             }
@@ -208,7 +208,7 @@ namespace lightdis{
 
         template<typename T>
             inline bool List<T>::del(ListNode<T>* index) {
-                kickOut(index);
+                remove(index);
                 delete index;
                 len--;
             }
@@ -228,7 +228,7 @@ namespace lightdis{
             }
 
         template<typename T>
-            inline void List<T>::kickOut(ListNode<T>* index) {
+            inline void List<T>::remove(ListNode<T>* index) {
                 ListNode<T>* prev = 0;
                 ListNode<T>* next = 0;
                 if (index == head) {

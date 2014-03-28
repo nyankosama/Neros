@@ -11,39 +11,31 @@
 =============================================================================*/
 #ifndef BASE_LIST_H_
 #define BASE_LIST_H_
+#include <cstdlib>
+#include "macro.h"
 
 namespace lightdis{
     namespace base{
         template <typename T> class List;
         template <typename T> class ListIter;
-        template <typename T> struct ListNode;
-
-
-        /**
-         * ListNode can only be created by new operator!!
-         * you can't create it in stack space!!!!
-         */
-        template <typename T>
-            struct ListNode{
-                struct ListNode<T>* prev;
-                struct ListNode<T>* next;
-                T value;
-            };
+        struct ListNode;
 
         template <typename T>
-            class ListIter{
+            class ListIterator{
                 public:
-                    ListIter(List<T>& li);
-                    ListIter(ListNode<T>* lin);
-                    virtual ~ListIter();
-                    bool hasNext();
-                    bool hasPrev();
-                    T& val();
-                    T& next();
-                    T& prev();
+                    ListIterator(List<T>& li);
+                    ListIterator(ListNode* lin);
+                    virtual ~ListIterator();
+                    T& operator * ();
+                    T& operator -> ();
+                    ListIterator& operator ++ ();
+                    ListIterator& operator -- ();
+
                 private:
-                    ListNode<T>* lin;
+                    ListNode* _lin;
+                    DISALLOW_POST_OPERATOR(ListIterator);
             };
+
 
         template <typename T>
             class List {
@@ -51,33 +43,38 @@ namespace lightdis{
                     List();
                     virtual ~List();
                     List(const List<T>& list);
-                    List<T>& operator =(const List<T>& li);
+                    T* popFront();
+                    T* popBack();
+                    T* popAt(ListIterator<T>& iter);
+                    T* popAt(size_t index);
+
+                    void pushBack(const T& val);
+                    void pushFront(const T& val);
+                    void pushAt(const ListIterator<T>& index, const T& val);
+                    void clearAll();
+
                     int compare(const List<T>* li);
-                    ListNode<T>* popHead();
-                    ListNode<T>* popTail();
-                    ListNode<T>* popAt(ListNode<T>* index);
-                    ListNode<T>* popAt(int index);
-                    ListNode<T>* getHead();
-                    ListNode<T>* getTail();
-                    void appendTail(ListNode<T>* li);//based on copy
-                    void appendHead(ListNode<T>* li);
-                    void insert(ListNode<T>* index,ListNode<T>* val);//insert the val at the position after index
-                    bool insert(int index,ListNode<T>* val);
-                    bool del(ListNode<T>* index);
-                    bool del(int index);
-                    void delAll();
-                    long size() const;
-                    ListIter<T> iterator();
-                    ListNode<T>* searchKey(const T& key);
+                    size_t size() const;
+
+                    ListIterator<T> begin() const;
+                    ListIterator<T> end() const;
+                    ListIterator<T> find(const T& key);
+
+                protected:
+                    struct ListNode{
+                        struct ListNode* prev;
+                        struct ListNode* next;
+                        T value;
+                    };
 
                 private:
-                    mutable ListNode<T>* head;
-                    mutable ListNode<T>* tail;
-                    unsigned long len;
+                    ListNode* _head;
+                    ListNode* _tail;
+                    size_t _len;
                     void makeCopy(const List<T> &list);
-                    void kickOut(ListNode<T>* index);
+                    void remove(ListNode* node);
+                    DISALLOW_ASSIGN(List);
             };
-
     }
 }
 

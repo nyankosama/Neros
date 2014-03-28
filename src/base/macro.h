@@ -8,4 +8,8 @@ void operator=(const TypeName&)
 #define DISALLOW_ASSIGN(TypeName) \
     void operator=(const TypeName&)
 
+#define DISALLOW_POST_OPERATOR(TypeName) \
+    TypeName operator ++ (int); \
+    TypeName operator -- (int);
+
 #endif
