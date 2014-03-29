@@ -12,6 +12,9 @@
 #ifndef BASE_CONSTRANT_H_
 #define BASE_CONSTRANT_H_
 
+#define SUCCESS 0
+#define FAIL -1
+
 namespace lightdis{
     namespace base{
 

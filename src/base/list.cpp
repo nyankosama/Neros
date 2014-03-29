@@ -10,193 +10,205 @@
 #
 =============================================================================*/
 #include <iostream>
+#include <cstring>
+#include <cstdlib>
 #include "list.h"
+#include "constants.h"
 using namespace std;
 
 namespace lightdis{
     namespace base{
         template<typename T>
-            inline ListIter<T>::ListIter(List<T>& li) {
-                lin = new ListNode<T>();
-                lin->prev = 0;
-                lin->next = li.getHead();
+            ListIterator<T>::ListIterator(List<T>& li) {
+                _lin = new ListNode<T>();
+                _lin = li._head;
             }
 
         template<typename T>
-            inline ListIter<T>::ListIter(ListNode<T>* lin) {
-                this->lin = new ListNode<T>();
-                this->lin->prev = 0;
-                this->lin->next = lin;
+            ListIterator<T>::ListIterator(ListNode<T>* lin) {
+                _lin = new ListNode<T>();
+                _lin->prev = lin->prev;
+                _lin->next = lin->next;
             }
 
         template<typename T>
-            inline ListIter<T>::~ListIter() {
+            inline ListIterator<T>::~ListIterator() {}
+
+        template<typename T>
+            inline T& ListIterator<T>::operator*() {
+                return *_lin;
             }
 
         template<typename T>
-            inline T& ListIter<T>::val() {
-                return lin->value;
+            inline T* ListIterator<T>::operator->(){
+                return _lin;
             }
 
         template<typename T>
-            inline T& ListIter<T>::next() {
-                lin = lin->next;
-                if (lin != 0)
-                    return lin->value;
+            inline ListIterator<T>& ListIterator<T>::operator++(){
+                _lin = _lin->next; 
+                return *this;
             }
 
         template<typename T>
-            inline T& ListIter<T>::prev() {
-                lin = lin->prev;
-                if (lin != 0)
-                    return lin->value;
+            inline ListIterator<T>& ListIterator<T>::operator--(){
+                _lin = _lin->prev; 
+                return *this;
             }
 
         template<typename T>
-            inline bool ListIter<T>::hasNext() {
-                if (lin->next != 0)
-                    return true;
-                else
-                    return false;
+            bool ListIterator<T>::operator == (const ListIterator<T>& iter){
+                return iter._lin  == _lin;
             }
 
         template<typename T>
-            inline bool ListIter<T>::hasPrev() {
-                if (lin->prev != 0)
-                    return true;
-                else
-                    return false;
+            bool ListIterator<T>::operator != (const ListIterator<T>& iter){
+                return iter._lin != _lin;
             }
 
         template<typename T>
-            inline List<T>::List() {
-                len = 0;
-                head = 0;
-                tail = 0;
+            inline T& ListNode<T>::operator*(){
+                return *value;
             }
 
         template<typename T>
-            inline List<T>::~List() {
-                delAll();
+            List<T>::List() {
+                _len = 0;
+                _head = NULL;
+                _tail = NULL;
             }
 
         template<typename T>
-            inline List<T>::List(const List<T>& list) {
-                len = list.len;
-                head = list.head;
-                if (len == 0){
-                    tail = 0;
-                    return;
-                }
-                ListNode<T>* li_iter = list.head;
-                ListNode<T>* iter = 0;
-                while (li_iter->next != list.tail) {
-                    iter = new ListNode<T>;
-                    if (iter == list.head)
-                        iter->prev = 0;
-                    iter->next = li_iter->next;
-                    iter->next->prev = iter;
-                    iter->value = li_iter->value;
-                    li_iter = li_iter->next;
-                    iter = iter->next;
-                }
-                tail = iter;
-                iter->next = 0;
-                iter->value = li_iter->value;
-
+            List<T>::~List() {
+                clearAll();
             }
 
         template<typename T>
-            inline int List<T>::compare(const List<T>* li) {
-                ListNode<T>* iter_my = head;
-                ListNode<T>* iter = li->head;
+            List<T>::List(const List<T>& list) {
+                _len = list._len;
+                ListNode<T>* before = NULL;
+                ListNode<T>* current = NULL;
 
-                while (iter_my->next != tail && iter->next != li->tail) {
-                    if (iter_my->value != iter->value) {
-                        return -1;
+                for (ListIterator<T> iter = list.begin(); iter != list.end(); ++iter){
+                    if (iter == list.begin()){
+                        current = new ListNode<T>();
+                        current->value = copyT(iter._lin->value);
+                        current->prev = NULL;
+                        _head = current;
+                        before = current;
+                        continue;
                     }
+                    else if (iter == list.end()){
+                        current = new ListNode<T>();
+                        current->value = copyT(iter._lin->value);
+                        current->prev = before;
+                        current->prev->next = current;
+                        current->next = NULL;
+                        _tail = current;
+                        continue;
+                    }
+
+                    current = new ListNode<T>();
+                    current->value = copyT(iter._lin->value);
+                    current->prev = before;
+                    current->prev->next = current;
+                    before = current;
                 }
+            }
 
-                if (iter_my->next == tail && iter->next == li->tail) {
-                    if (iter_my->next->value == iter->next->value)
-                        return 0;
-                    else
-                        return -1;
+
+        template<typename T>
+            inline int List<T>::popFront(T& val) {
+                if (empty()){
+                    return FAIL;
                 }
-                return -1;
+                ListNode<T>* node = _head;
+                _head = _head->next;
+                if (_head != NULL)
+                    _head->prev = NULL;
+                _len--;
+                val = node->value; 
+                return SUCCESS;
             }
 
         template<typename T>
-            inline ListNode<T>* List<T>::popHead() {
-                ListNode<T>* iter = head;
-                head = head->next;
-                if (head != 0)
-                    head->prev = 0;
-                len--;
-                return iter;
-            }
-
-        template<typename T>
-            inline ListNode<T>* List<T>::popTail() {
-                ListNode<T>* iter = tail;
-                tail = tail->prev;
-                if (tail != 0)
-                    tail->next = 0;
-                len--;
-                return iter;
-            }
-
-        template<typename T>
-            inline ListNode<T>* List<T>::popAt(ListNode<T>* index) {
-                remove(index);
-                len--;
-                return index;
-            }
-
-        template<typename T>
-            inline ListNode<T>* List<T>::popAt(int index) {
-                ListNode<T>* iter = head;
-                for (int i = 0; i < index && iter != 0; i++) {
-                    iter = iter->next;
+            inline int List<T>::popBack(T& val) {
+                if (empty()){
+                    return FAIL; 
                 }
-                if (iter == 0)
-                    return 0;
-                popAt(iter);
-                return iter;
+                ListNode<T>* node = _tail;
+                _tail = _tail->prev;
+                if (_tail != 0)
+                    _tail->next = 0;
+                _len--;
+                val = node->value;
+                return SUCCESS;
             }
 
         template<typename T>
-            inline void List<T>::appendTail(ListNode<T>* li) {
-                if (len == 0) {
-                    head = li;
-                    tail = li;
-                    li->next = 0;
-                    li->prev = 0;
+            inline int List<T>::popAt(const ListIterator<T>& iter, T& val) {
+                int ret = remove(iter._lin);
+                if (ret != SUCCESS){
+                    return FAIL;
+                }
+                _len--;
+                val = *iter;
+                return SUCCESS;
+            }
+
+        template<typename T>
+            inline int List<T>::popAt(size_t index, T& val) {
+                ListNode<T>* node = _head;
+                for (int i = 0; i < index && node != NULL; i++) {
+                    node = node->next;
+                }
+                if (node == NULL)
+                    return FAIL;
+                popAt(node);
+                val = node->value;
+                return SUCCESS;
+            }
+
+        template<typename T>
+            inline int List<T>::pushBack(const T& val) {
+                if (_len == 0) {
+                    _head = new ListNode<T>();
+                    _head->value = val;
+                    _tail = _head;
+                    _head->next = NULL;
+                    _head->prev = NULL;
                 } else {
-                    tail->next = li;
-                    li->prev = tail;
-                    tail = li;
+                    _tail->next = new ListNode<T>();
+                    _tail->next->value = val;
+                    _tail->next->prev = _tail;
+                    _tail->next->next = NULL;
+                    _tail = _tail->next;
                 }
-                len++;
+                _len++;
+                return SUCCESS;
             }
 
         template<typename T>
-            inline void List<T>::appendHead(ListNode<T>* li) {
-                if (len == 0){
-                    head = li;
-                    tail = li;
-                    li->next = 0;
-                    li->prev = 0;
+            inline int List<T>::pushFront(const T& val) {
+                if (_len == 0){
+                    _head = new ListNode<T>();
+                    _head->value = val;
+                    _tail = _head;
+                    _head->next = NULL;
+                    _head->prev = NULL;
                 } else{
-                    head->prev = li;
-                    li->next = head;
-                    head = li;
+                    _head->prev = new ListNode<T>();
+                    _head->prev->value = val;
+                    _head->prev->next = _head;
+                    _head->prev->prev = NULL;
+                    _head = _head->prev;
                 }
-                len++;
+                _len++;
+                return SUCCESS;
             }
 
         template<typename T>
-            inline void List<T>::insert(ListNode<T>* index, ListNode<T>* val) {
+            inline int List<T>::pushAt(ListNode<T>* index, const T& val) {
                 ListNode<T>* next = index->next;
                 index->next = val;
                 val->prev = index;
@@ -240,27 +252,38 @@ namespace lightdis{
                 del(iter);
                 return true;
             }
-
+        
+        //TODO 这里没有判断node是否为该list中的node，可能会错误传入其他list中的node 
         template<typename T>
-            inline void List<T>::remove(ListNode<T>* index) {
+            inline int List<T>::remove(ListNode<T>* node) {
                 ListNode<T>* prev = 0;
                 ListNode<T>* next = 0;
-                if (index == head) {
-                    next = index->next;
+                if (node == head) {
+                    next = node->next;
                     if (next != 0)
                         next->prev = 0;
                     head = next;
-                } else if (index == tail) {
-                    prev = index->prev;
+                } else if (node == tail) {
+                    prev = node->prev;
                     if (prev != 0)
                         prev->next = 0;
                     tail = prev;
                 } else {
-                    prev = index->prev;
-                    next = index->next;
+                    prev = node->prev;
+                    next = node->next;
                     prev->next = next;
                     next->prev = prev;
                 }
+                //TODO 暂时没有处理异常情况
+                return SUCCESS;
+            }
+
+        template<typename T>
+            inline T* List<T>::copyT(const T* t){
+                //TODO 这里sizeof是否能正确得出大小有待验证
+                void* dest = malloc(sizeof(T));
+                memcpy(dest, t, sizeof(T));
+                return static_cast<T*>(dest);
             }
 
         template<typename T>
@@ -306,8 +329,8 @@ namespace lightdis{
 
 
         template<typename T>
-            inline ListIter<T> List<T>::iterator() {
-                return ListIter<T>(*this);
+            inline ListIterator<T> List<T>::iterator() {
+                return ListIterator<T>(*this);
             }       
     }
 }
