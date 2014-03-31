@@ -13,7 +13,6 @@
 #include <string>
 #include <stdio.h>
 #include "base/list.h"
-#include "base/list.cpp"
 #include "base/string_data.h"
 using namespace std;
 using namespace lightdis::base;

@@ -88,4 +88,5 @@ namespace lightdis{
     }
 }
 
+#include "list_inl.h"
 #endif /* LIST_H_ */

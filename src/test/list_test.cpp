@@ -1,7 +1,6 @@
 #include <string>
 #include "unittest/unittest.h"
 #include "base/list.h"
-#include "base/list.cpp"
 
 using namespace std;
 

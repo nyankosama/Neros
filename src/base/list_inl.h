@@ -9,6 +9,9 @@
 # Description: 
 #
 =============================================================================*/
+#ifndef _BASE_LIST_INL_H_
+#define _BASE_LIST_INL_H_
+
 #include <cstring>
 #include "list.h"
 #include "constants.h"
@@ -316,3 +319,4 @@ namespace lightdis{
     }
 }
 
+#endif
