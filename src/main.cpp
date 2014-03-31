@@ -19,15 +19,6 @@ using namespace std;
 using namespace lightdis::base;
 
 
-void printList(List<int>& list){
-    ListIter<int> iter = list.iterator();
-    cout << "list value:" << endl;
-    while(iter.hasNext()){
-        cout << iter.next() <<"->";
-    }
-    cout << endl;
-}
-
 
 void print_mem_as_int(char* cptr, int len){
     for (int i=0; i<len; i++){

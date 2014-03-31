@@ -23,16 +23,17 @@ namespace lightdis{
         template <typename T>
             class ListIterator{
                 public:
-                    ListIterator(List<T>& li);
+                    ListIterator();
                     ListIterator(ListNode<T>* lin);
                     virtual ~ListIterator();
-                    T& operator * ();
-                    T* operator -> ();
+                    T& operator * () const;
+                    T* operator -> () const;
                     ListIterator& operator ++ ();
                     ListIterator& operator -- ();
-                    bool operator == (const ListIterator<T>& iter);
-                    bool operator != (const ListIterator<T>& iter);
+                    bool operator == (const ListIterator<T>& iter) const;
+                    bool operator != (const ListIterator<T>& iter) const;
 
+                    friend class List<T>;
                 private:
                     ListNode<T>* _lin;
                     DISALLOW_POST_OPERATOR(ListIterator);
@@ -40,6 +41,7 @@ namespace lightdis{
 
         template<typename T>
             struct ListNode{
+                virtual ~ListNode<T>();
                 struct ListNode* prev;
                 struct ListNode* next;
                 T* value;
@@ -62,14 +64,16 @@ namespace lightdis{
                     int pushBack(const T& val);
                     int pushFront(const T& val);
                     int pushAt(const ListIterator<T>& index, const T& val);
-                    int clearAll();
+                    int clearAll();//return the elements it removed
+                    int erase(const ListIterator<T>& iter);
                     bool empty() const{return _len == 0;}
 
-                    size_t size() const;
+                    size_t size() const {return _len;};
 
                     ListIterator<T> begin() const;
                     ListIterator<T> end() const;
-                    ListIterator<T> find(const T& key);
+                    
+                    int find(const T& key, ListIterator<T>& val);
 
                     friend class ListIterator<T>;
 

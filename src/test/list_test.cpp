@@ -8,12 +8,108 @@ using namespace std;
 namespace lightdis{
     namespace base{
 
-        TEST(LIST, COMPILE){
-            List<int> list;
-            ListNode<int>* node = new ListNode<int>();
-            node->value = 1;
-            list.appendTail(node);
-            cout << list.popTail()->value << endl;
+        List<int>* list = NULL;
+
+        SUITE_TRIGGER(LIST, BEFORE){
+            list = new List<int>();
+            for (int i =0; i<5; i++){
+                list->pushBack(i);
+            }
+            ASSERT_EQUALS(list->size(), 5);
+        }
+
+        SUITE_TRIGGER(LIST, AFTER){
+            delete list;
+        }
+
+
+        TEST(LIST, COPY_CONSTRUCTOR){
+            List<int> copy(*list);
+            int ele = *(copy.begin());
+            ASSERT_EQUALS(ele, 0);
+        }
+
+        TEST(LIST, POP_FRONT){
+            int a = 5;
+            list->popFront(a);
+            ASSERT_EQUALS(a, 0);
+            ASSERT_EQUALS(list->size(), 4);
+        }
+
+        TEST(LIST, POP_BACK){
+            int a = 0;
+            list->popBack(a);
+            ASSERT_EQUALS(a, 4);
+            ASSERT_EQUALS(list->size(), 4);
+        }
+
+        TEST(LIST, POP_AT){
+            int a = 0;
+            ListIterator<int> iter = list->begin();
+            ++iter;
+            list->popAt(iter, a);
+            ASSERT_EQUALS(a, 1);
+            ASSERT_EQUALS(list->size(), 4);
+        }
+
+        TEST(LIST, POP_AT_INDEX){
+            int a = 0;
+            list->popAt(1, a);
+            ASSERT_EQUALS(a, 1);
+            ASSERT_EQUALS(list->size(), 4);
+        }
+
+        TEST(LIST, PUSH_BACK){
+            list->pushBack(5);
+            ASSERT_EQUALS(list->size(), 6);
+            int a = 0;
+            list->popAt(5, a);
+            ASSERT_EQUALS(a, 5);
+        }
+
+        TEST(LIST, PUSH_FRONT){
+            list->pushFront(-1);
+            ASSERT_EQUALS(list->size(), 6);
+            int a = 0;
+            list->popAt(0, a);
+            ASSERT_EQUALS(a, -1);
+        }
+
+        TEST(LIST, PUSH_AT){
+            ListIterator<int> iter = list->begin();
+            ++iter;
+            list->pushAt(iter, 10);
+            ASSERT_EQUALS(list->size(), 6);
+            int a = 0;
+            ++iter;
+            list->popAt(iter, a);
+            ASSERT_EQUALS(a, 10);
+        }
+
+        TEST(LIST, CLEAR_ALL){
+            list->clearAll();
+            ASSERT_EQUALS(list->size(), 0);
+        }
+
+        TEST(LIST, ERASE){
+            ListIterator<int> iter = list->begin();
+            list->erase(iter);
+            ASSERT_EQUALS(list->size(), 4);
+            ListIterator<int> iter1 = list->begin();
+            ASSERT_EQUALS(*iter1, 1);
+        }
+
+        TEST(LIST, EMPTY){
+            ASSERT_EQUALS(list->empty(), false);
+            list->clearAll();
+            ASSERT_EQUALS(list->empty(), true);
+        }
+
+        TEST(LIST, FIND){
+            ListIterator<int> iter;
+            int ret = list->find(1, iter);
+            ASSERT_EQUALS(*iter, 1); 
+            ASSERT_EQUALS(ret, 0);
         }
     }
 }
