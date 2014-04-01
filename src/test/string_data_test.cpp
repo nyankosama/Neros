@@ -101,7 +101,7 @@ namespace lightdis{
 }
 
 
-TEST_START()
+TEST_START(STRING_DATA_TEST)
 
 
 

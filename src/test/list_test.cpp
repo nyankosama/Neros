@@ -14,7 +14,6 @@ namespace lightdis{
             for (int i =0; i<5; i++){
                 list->pushBack(i);
             }
-            ASSERT_EQUALS(list->size(), 5);
         }
 
         SUITE_TRIGGER(LIST, AFTER){
@@ -114,7 +113,7 @@ namespace lightdis{
 }
 
 
-TEST_START()
+TEST_START(LIST_TEST)
 
 
 
