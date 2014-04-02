@@ -24,7 +24,7 @@ namespace lightdis{
                 virtual ~ListNode<T>();
                 struct ListNode* prev;
                 struct ListNode* next;
-                T* value;
+                T value;
                 T& operator * ();
             };
 
@@ -50,10 +50,10 @@ namespace lightdis{
                     node_t* _lin;
                     DISALLOW_POST_OPERATOR(ListIterator);
             };
-
+        
         
         //TODO 需要const iterator的实现
-        template <class T, class Allocator = std::allocator<T> >
+        template <class T, class Allocator = std::allocator<ListNode<T> > >
             class List {
                 public:
                     typedef List<T, Allocator> self_t;
@@ -91,9 +91,11 @@ namespace lightdis{
                     node_t* _head;
                     node_t* _tail;
                     size_t _len;
+                    allocator_t _allocator;
+
+                    node_t* createNode(const value_type& value);
+                    int destroyNode(node_t* node);
                     int remove(node_t* node);
-                    value_type* copyT(const value_type* t);
-                    allocator_t allocator;
                     DISALLOW_ASSIGN(List);
             };
     }

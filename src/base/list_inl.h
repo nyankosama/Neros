@@ -1,5 +1,5 @@
 /*=============================================================================
-#
+iter._lin->value#
 # Author: liangrui.hlr email:i@nyankosama.com
 #
 # Last modified:	2014-04-02 02:53
@@ -34,7 +34,7 @@ namespace lightdis{
 
         template<class _List>
             inline typename ListIterator<_List>::value_type& ListIterator<_List>::operator*() const{
-                return *(_lin->value);
+                return _lin->value;
             }
 
         template<class _List>
@@ -66,13 +66,9 @@ namespace lightdis{
 
         template<class T>
             inline T& ListNode<T>::operator*(){
-                return *value;
+                return value;
             }
 
-        template<class T>
-            ListNode<T>::~ListNode<T>(){
-                delete value;
-            }
 
         template<class T, class _alloc>
             List<T, _alloc>::List() {
@@ -94,16 +90,14 @@ namespace lightdis{
 
                 for (iterator iter = list.begin(); iter != list.end(); ++iter){
                     if (iter == list.begin()){
-                        current = new node_t();
-                        current->value = copyT(iter._lin->value);
+                        current = createNode(iter._lin->value);
                         current->prev = NULL;
                         _head = current;
                         before = current;
                         continue;
                     }
                     else if (iter == list.end()){
-                        current = new node_t();
-                        current->value = copyT(iter._lin->value);
+                        current = createNode(iter._lin->value);
                         current->prev = before;
                         current->prev->next = current;
                         current->next = NULL;
@@ -111,8 +105,7 @@ namespace lightdis{
                         continue;
                     }
 
-                    current = new node_t();
-                    current->value = copyT(iter._lin->value);
+                    current = createNode(iter._lin->value);
                     current->prev = before;
                     current->prev->next = current;
                     before = current;
@@ -130,7 +123,7 @@ namespace lightdis{
                 if (_head != NULL)
                     _head->prev = NULL;
                 _len--;
-                val = *(node->value); 
+                val = node->value; 
                 return SUCCESS;
             }
 
@@ -144,7 +137,7 @@ namespace lightdis{
                 if (_tail != 0)
                     _tail->next = 0;
                 _len--;
-                val = *(node->value);
+                val = node->value;
                 return SUCCESS;
             }
 
@@ -171,14 +164,12 @@ namespace lightdis{
         template<class T, class _alloc>
             inline int List<T, _alloc>::pushBack(const value_type& val) {
                 if (_len == 0) {
-                    _head = new node_t();
-                    _head->value = copyT(&val);
+                    _head = createNode(val);
                     _tail = _head;
                     _head->next = NULL;
                     _head->prev = NULL;
                 } else {
-                    _tail->next = new node_t();
-                    _tail->next->value = copyT(&val);
+                    _tail->next = createNode(val);
                     _tail->next->prev = _tail;
                     _tail->next->next = NULL;
                     _tail = _tail->next;
@@ -190,14 +181,12 @@ namespace lightdis{
         template<class T, class _alloc>
             inline int List<T, _alloc>::pushFront(const value_type& val) {
                 if (_len == 0){
-                    _head = new node_t();
-                    _head->value = copyT(&val);
+                    _head = createNode(val);
                     _tail = _head;
                     _head->next = NULL;
                     _head->prev = NULL;
                 } else{
-                    _head->prev = new node_t();
-                    _head->prev->value = copyT(&val);
+                    _head->prev = createNode(val);
                     _head->prev->next = _head;
                     _head->prev->prev = NULL;
                     _head = _head->prev;
@@ -209,8 +198,7 @@ namespace lightdis{
         template<class T, class _alloc>
             inline int List<T, _alloc>::pushAt(const iterator& index, const value_type& val) {
                 node_t* next = index._lin->next;
-                node_t* new_node = new node_t();
-                new_node->value = copyT(&val);
+                node_t* new_node = createNode(val);
                 new_node->prev = index._lin;
                 index._lin->next = new_node;
                 new_node->next = next;
@@ -228,7 +216,7 @@ namespace lightdis{
                 for (iterator iter = begin(); iter != end();){
                     before = iter._lin;
                     ++iter;
-                    delete before;
+                    destroyNode(before);
                 }
                 size_t size = _len;
                 _len = 0;
@@ -237,21 +225,6 @@ namespace lightdis{
                 return size;
             }
 
-        /*
-        template<class T>
-            inline bool List<T>::del(int index) {
-                if (len == 0)
-                    return false;
-                ListNode<T>* iter = head;
-                for (int i = 0; i < index; i++) {
-                    iter = iter->next;
-                    if (iter == 0)
-                        return false;
-                }
-                del(iter);
-                return true;
-            }
-        */
         
         //TODO 这里没有判断node是否为该list中的node，可能会错误传入其他list中的node 
         template<class T, class _alloc>
@@ -279,15 +252,28 @@ namespace lightdis{
                 return SUCCESS;
             }
 
-
+        /*
         template<class T, class _alloc>
             inline T* List<T, _alloc>::copyT(const value_type* t){
                 //TODO 这里sizeof是否能正确得出大小有待验证
                 void* dest = malloc(sizeof(value_type));
                 memcpy(dest, t, sizeof(value_type));
                 return static_cast<value_type*>(dest);
+            }*/
+
+        template<class T, class _alloc>
+            inline typename List<T, _alloc>::node_t* List<T, _alloc>::createNode(const value_type& value){
+                node_t* ptr = _allocator.allocate(1);
+                new ((void*)(&(ptr->value))) value_type(value);
+                return ptr;
             }
 
+        template<class T, class _alloc>
+            inline int List<T, _alloc>::destroyNode(node_t* node){
+                node->value.~value_type();
+                _allocator.deallocate(node, 1);
+                return SUCCESS;
+            }
 
 
         template<class T, class _alloc>
