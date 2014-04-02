@@ -19,13 +19,13 @@
 namespace lightdis{
     namespace base{
 
-        template<typename T>
-            ListIterator<T>::ListIterator(){
+        template<class T, class _alloc>
+            ListIterator<T, _alloc>::ListIterator(){
                 _lin = NULL;
             }
 
-        template<typename T>
-            ListIterator<T>::ListIterator(ListNode<T>* lin) {
+        template<class T, class _alloc>
+            ListIterator<T, _alloc>::ListIterator(ListNode<T>* lin) {
                 /*_lin = new ListNode<T>();
                 _lin->prev = lin->prev;
                 _lin->next = lin->next;
@@ -33,65 +33,65 @@ namespace lightdis{
                 _lin = lin;
             }
 
-        template<typename T>
-            inline ListIterator<T>::~ListIterator() {}
+        template<class T, class _alloc>
+            inline ListIterator<T, _alloc>::~ListIterator() {}
 
-        template<typename T>
-            inline T& ListIterator<T>::operator*() const{
+        template<class T, class _alloc>
+            inline T& ListIterator<T, _alloc>::operator*() const{
                 return *(_lin->value);
             }
 
-        template<typename T>
-            inline T* ListIterator<T>::operator->() const{
+        template<class T, class _alloc>
+            inline T* ListIterator<T, _alloc>::operator->() const{
                 return _lin;
             }
 
-        template<typename T>
-            inline ListIterator<T>& ListIterator<T>::operator++(){
+        template<class T, class _alloc>
+            inline ListIterator<T, _alloc>& ListIterator<T, _alloc>::operator++(){
                 _lin = _lin->next; 
                 return *this;
             }
 
-        template<typename T>
-            inline ListIterator<T>& ListIterator<T>::operator--(){
+        template<class T, class _alloc>
+            inline ListIterator<T, _alloc>& ListIterator<T, _alloc>::operator--(){
                 _lin = _lin->prev; 
                 return *this;
             }
 
-        template<typename T>
-            bool ListIterator<T>::operator == (const ListIterator<T>& iter) const{
+        template<class T, class _alloc>
+            bool ListIterator<T, _alloc>::operator == (const ListIterator<T>& iter) const{
                 return iter._lin  == _lin;
             }
 
-        template<typename T>
-            bool ListIterator<T>::operator != (const ListIterator<T>& iter) const{
+        template<class T, class _alloc>
+            bool ListIterator<T, _alloc>::operator != (const ListIterator<T>& iter) const{
                 return iter._lin != _lin;
             }
 
-        template<typename T>
+        template<class T>
             inline T& ListNode<T>::operator*(){
                 return *value;
             }
 
-        template<typename T>
+        template<class T>
             ListNode<T>::~ListNode<T>(){
                 delete value;
             }
 
-        template<typename T>
-            List<T>::List() {
+        template<class T, class _alloc>
+            List<T, _alloc>::List() {
                 _len = 0;
                 _head = NULL;
                 _tail = NULL;
             }
 
-        template<typename T>
-            List<T>::~List() {
+        template<class T, class _alloc>
+            List<T, _alloc>::~List() {
                 clearAll();
             }
 
-        template<typename T>
-            List<T>::List(const List<T>& list) {
+        template<class T, class _alloc>
+            List<T, _alloc>::List(const List<T>& list) {
                 _len = list._len;
                 ListNode<T>* before = NULL;
                 ListNode<T>* current = NULL;
@@ -124,8 +124,8 @@ namespace lightdis{
             }
 
 
-        template<typename T>
-            inline int List<T>::popFront(T& val) {
+        template<class T, class _alloc>
+            inline int List<T, _alloc>::popFront(T& val) {
                 if (empty()){
                     return FAIL;
                 }
@@ -138,8 +138,8 @@ namespace lightdis{
                 return SUCCESS;
             }
 
-        template<typename T>
-            inline int List<T>::popBack(T& val) {
+        template<class T, class _alloc>
+            inline int List<T, _alloc>::popBack(T& val) {
                 if (empty()){
                     return FAIL; 
                 }
@@ -152,8 +152,8 @@ namespace lightdis{
                 return SUCCESS;
             }
 
-        template<typename T>
-            inline int List<T>::popAt(const ListIterator<T>& iter, T& val) {
+        template<class T, class _alloc>
+            inline int List<T, _alloc>::popAt(const ListIterator<T>& iter, T& val) {
                 int ret = erase(iter);
                 if (ret != SUCCESS){
                     return FAIL;
@@ -162,8 +162,8 @@ namespace lightdis{
                 return SUCCESS;
             }
 
-        template<typename T>
-            inline int List<T>::popAt(size_t index, T& val) {
+        template<class T, class _alloc>
+            inline int List<T, _alloc>::popAt(size_t index, T& val) {
                 ListIterator<int> iter = begin();
                 for (int i=0; iter != end() && i < index; ++iter, i++){}
                 if (iter == end())
@@ -172,8 +172,8 @@ namespace lightdis{
                 return SUCCESS;
             }
 
-        template<typename T>
-            inline int List<T>::pushBack(const T& val) {
+        template<class T, class _alloc>
+            inline int List<T, _alloc>::pushBack(const T& val) {
                 if (_len == 0) {
                     _head = new ListNode<T>();
                     _head->value = copyT(&val);
@@ -191,8 +191,8 @@ namespace lightdis{
                 return SUCCESS;
             }
 
-        template<typename T>
-            inline int List<T>::pushFront(const T& val) {
+        template<class T, class _alloc>
+            inline int List<T, _alloc>::pushFront(const T& val) {
                 if (_len == 0){
                     _head = new ListNode<T>();
                     _head->value = copyT(&val);
@@ -210,8 +210,8 @@ namespace lightdis{
                 return SUCCESS;
             }
 
-        template<typename T>
-            inline int List<T>::pushAt(const ListIterator<T>& index, const T& val) {
+        template<class T, class _alloc>
+            inline int List<T, _alloc>::pushAt(const ListIterator<T>& index, const T& val) {
                 ListNode<T>* next = index._lin->next;
                 ListNode<T>* new_node = new ListNode<T>();
                 new_node->value = copyT(&val);
@@ -226,8 +226,8 @@ namespace lightdis{
             }
 
 
-        template<typename T>
-            inline int List<T>::clearAll() {
+        template<class T, class _alloc>
+            inline int List<T, _alloc>::clearAll() {
                 ListNode<T>* before = NULL;
                 for (ListIterator<T> iter = begin(); iter != end();){
                     before = iter._lin;
@@ -242,7 +242,7 @@ namespace lightdis{
             }
 
         /*
-        template<typename T>
+        template<class T>
             inline bool List<T>::del(int index) {
                 if (len == 0)
                     return false;
@@ -258,8 +258,8 @@ namespace lightdis{
         */
         
         //TODO 这里没有判断node是否为该list中的node，可能会错误传入其他list中的node 
-        template<typename T>
-            inline int List<T>::erase(const ListIterator<T>& iter) {
+        template<class T, class _alloc>
+            inline int List<T, _alloc>::erase(const ListIterator<T>& iter) {
                 ListNode<T>* prev = 0;
                 ListNode<T>* next = 0;
                 if (iter._lin == _head) {
@@ -284,8 +284,8 @@ namespace lightdis{
             }
 
 
-        template<typename T>
-            inline T* List<T>::copyT(const T* t){
+        template<class T, class _alloc>
+            inline T* List<T, _alloc>::copyT(const T* t){
                 //TODO 这里sizeof是否能正确得出大小有待验证
                 void* dest = malloc(sizeof(T));
                 memcpy(dest, t, sizeof(T));
@@ -294,20 +294,20 @@ namespace lightdis{
 
 
 
-        template<typename T>
-            ListIterator<T> List<T>::begin() const{
+        template<class T, class _alloc>
+            ListIterator<T, _alloc> List<T, _alloc>::begin() const{
                 return ListIterator<T>(_head);
             }
 
 
-        template<typename T>
-            ListIterator<T> List<T>::end() const{
+        template<class T, class _alloc>
+            ListIterator<T, _alloc> List<T, _alloc>::end() const{
                 return ListIterator<T>();
             }
 
 
-        template<typename T>
-            int List<T>::find(const T& t, ListIterator<T>& val){
+        template<class T, class _alloc>
+            int List<T, _alloc>::find(const T& t, ListIterator<T>& val){
                 for (ListIterator<T> iter = begin(); iter != end(); ++iter)            {
                     if (*iter == t){
                         val._lin = iter._lin;

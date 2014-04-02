@@ -12,15 +12,16 @@
 #ifndef BASE_LIST_H_
 #define BASE_LIST_H_
 #include <cstdlib>
+#include <memory>
 #include "macro.h"
 
 namespace lightdis{
     namespace base{
-        template <typename T> class List;
-        template <typename T> class ListIter;
+        template <class T, class _alloc> class List;
+        template <class T, class _alloc> class ListIter;
         template <typename T> struct ListNode;
 
-        template <typename T>
+        template <class T, class _alloc = std::allocator<T> >
             class ListIterator{
                 public:
                     ListIterator();
@@ -33,13 +34,13 @@ namespace lightdis{
                     bool operator == (const ListIterator<T>& iter) const;
                     bool operator != (const ListIterator<T>& iter) const;
 
-                    friend class List<T>;
+                    friend class List<T, _alloc>;
                 private:
                     ListNode<T>* _lin;
                     DISALLOW_POST_OPERATOR(ListIterator);
             };
 
-        template<typename T>
+        template<class T>
             struct ListNode{
                 virtual ~ListNode<T>();
                 struct ListNode* prev;
@@ -49,7 +50,7 @@ namespace lightdis{
             };
 
 
-        template <typename T>
+        template <class T, class _alloc = std::allocator<T> >
             class List {
                 public:
                     List();
@@ -70,8 +71,8 @@ namespace lightdis{
 
                     size_t size() const {return _len;};
 
-                    ListIterator<T> begin() const;
-                    ListIterator<T> end() const;
+                    ListIterator<T, _alloc> begin() const;
+                    ListIterator<T, _alloc> end() const;
                     
                     int find(const T& key, ListIterator<T>& val);
 
