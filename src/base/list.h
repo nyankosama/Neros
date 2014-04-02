@@ -13,7 +13,7 @@
 #define BASE_LIST_H_
 #include <cstdlib>
 #include <memory>
-#include "macro.h"
+#include "base/macro.h"
 
 namespace lightdis{
     namespace base{
@@ -35,6 +35,13 @@ namespace lightdis{
                     typedef typename _List::node_t node_t;
                     typedef ListIterator<_List> iterator;
 
+                    friend class List<value_type, typename _List::allocator_t>;
+
+                private:
+                    node_t* _lin;
+                    DISALLOW_POST_OPERATOR(ListIterator);
+
+                public:
                     ListIterator();
                     ListIterator(node_t* lin);
                     virtual ~ListIterator();
@@ -45,10 +52,6 @@ namespace lightdis{
                     bool operator == (const iterator& iter) const;
                     bool operator != (const iterator& iter) const;
 
-                    friend class List<value_type, typename _List::allocator_t>;
-                private:
-                    node_t* _lin;
-                    DISALLOW_POST_OPERATOR(ListIterator);
             };
         
         
@@ -62,6 +65,16 @@ namespace lightdis{
                     typedef ListIterator<self_t> iterator;
                     typedef ListNode<value_type> node_t;
 
+                    
+                    friend class ListIterator<self_t>;
+
+                private:
+                    node_t* _head;
+                    node_t* _tail;
+                    size_t _len;
+                    allocator_t _allocator;
+
+                public:
                     List();
                     virtual ~List();
                     List(const List<value_type>& list);
@@ -85,18 +98,12 @@ namespace lightdis{
                     
                     int find(const value_type& key, iterator& val);
 
-                    friend class ListIterator<self_t>;
-
                 private:
-                    node_t* _head;
-                    node_t* _tail;
-                    size_t _len;
-                    allocator_t _allocator;
-
                     node_t* createNode(const value_type& value);
                     int destroyNode(node_t* node);
                     int remove(node_t* node);
                     DISALLOW_ASSIGN(List);
+
             };
     }
 }

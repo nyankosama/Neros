@@ -9,18 +9,31 @@
 #define BASE_STRING_DATA_H_
 #include <string>
 #include <memory>
-#include "macro.h"
+#include "base/constants.h"
+#include "base/macro.h"
 using namespace std;
 
 namespace lightdis{
     namespace base{
-        template <class _alloc> class BasicStringData;
+        template <class Allocator> class BasicStringData;
         typedef BasicStringData<allocator<char> > StringData;
 
-        template <class _alloc = allocator<char> >
+        template <class Allocator = allocator<char> >
         class BasicStringData {
             public:
+                typedef Allocator allocator_t;
 
+            private:
+                size_t _len;
+                size_t _free;
+                char* _data;
+                allocator_t _allocator;
+                void makeRoomForAppend(size_t required_len);
+                char* createSpace(size_t size);
+                int destroySpace(char* ptr, size_t size);
+                DISALLOW_ASSIGN(BasicStringData);
+
+            public:
                 /*
                  * init a BasicStringData with 0 free and 0 length and empty string
                  */
@@ -91,48 +104,40 @@ namespace lightdis{
 
                 const_iterator end() const {return _data + _len; }
 
-
-
-            private:
-                size_t _len;
-                size_t _free;
-                char* _data;
-                void makeRoomForAppend(size_t required_len);
-                DISALLOW_ASSIGN(BasicStringData);
         };
 
-        template<class _alloc>
-        inline bool operator==(const BasicStringData<_alloc>& lhs, const BasicStringData<_alloc>& rhs) {
+        template<class Allocator>
+        inline bool operator==(const BasicStringData<Allocator>& lhs, const BasicStringData<Allocator>& rhs) {
             return lhs.compare(rhs) == 0;
         }
 
-        template<class _alloc>
-        inline bool operator!=(const BasicStringData<_alloc>& lhs, const BasicStringData<_alloc>& rhs) {
+        template<class Allocator>
+        inline bool operator!=(const BasicStringData<Allocator>& lhs, const BasicStringData<Allocator>& rhs) {
             return lhs.compare(rhs) != 0;
         }
 
-        template<class _alloc>
-        inline bool operator<(const BasicStringData<_alloc>& lhs, const BasicStringData<_alloc>& rhs) {
+        template<class Allocator>
+        inline bool operator<(const BasicStringData<Allocator>& lhs, const BasicStringData<Allocator>& rhs) {
             return lhs.compare(rhs) < 0 ;
         }
 
-        template<class _alloc>
-        inline bool operator<=(const BasicStringData<_alloc>& lhs, const BasicStringData<_alloc>& rhs) {
+        template<class Allocator>
+        inline bool operator<=(const BasicStringData<Allocator>& lhs, const BasicStringData<Allocator>& rhs) {
             return lhs.compare(rhs) <= 0;
         }
 
-        template<class _alloc>
-        inline bool operator>(const BasicStringData<_alloc>& lhs, const BasicStringData<_alloc>& rhs) {
+        template<class Allocator>
+        inline bool operator>(const BasicStringData<Allocator>& lhs, const BasicStringData<Allocator>& rhs) {
             return lhs.compare(rhs) > 0;
         }
 
-        template<class _alloc>
-        inline bool operator>=(const BasicStringData<_alloc>& lhs, const BasicStringData<_alloc>& rhs) {
+        template<class Allocator>
+        inline bool operator>=(const BasicStringData<Allocator>& lhs, const BasicStringData<Allocator>& rhs) {
             return lhs.compare(rhs) >= 0;
         }
 
-        template<class _alloc>
-        ostream& operator<< (std::ostream& stream, const BasicStringData<_alloc>& value);
+        template<class Allocator>
+        ostream& operator<< (std::ostream& stream, const BasicStringData<Allocator>& value);
 
     }
 }

@@ -13,8 +13,8 @@ iter._lin->value#
 #define _BASE_LIST_INL_H_
 
 #include <cstring>
-#include "list.h"
-#include "constants.h"
+#include "base/list.h"
+#include "base/constants.h"
 
 namespace lightdis{
     namespace base{
