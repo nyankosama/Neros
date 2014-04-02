@@ -1,5 +1,5 @@
 /*
- * StringData.h
+ * BasicStringData.h
  *
  *  Created on: Jul 23, 2013
  *      Author: nekosama
@@ -8,72 +8,77 @@
 #ifndef BASE_STRING_DATA_H_
 #define BASE_STRING_DATA_H_
 #include <string>
+#include <memory>
 #include "macro.h"
 using namespace std;
 
 namespace lightdis{
     namespace base{
-        class StringData {
+        template <class _alloc> class BasicStringData;
+        typedef BasicStringData<allocator<char> > StringData;
+
+        template <class _alloc = allocator<char> >
+        class BasicStringData {
             public:
 
                 /*
-                 * init a StringData with 0 free and 0 length and empty string
+                 * init a BasicStringData with 0 free and 0 length and empty string
                  */
-                StringData();                
+                BasicStringData();                
 
                 /*
-                 * init StringData with concrete text, the free length will be 0
+                 * init BasicStringData with concrete text, the free length will be 0
                  */
-                explicit StringData(const string& str);
+                explicit BasicStringData(const string& str);
 
-                explicit StringData(const string& str, size_t len);
+                explicit BasicStringData(const string& str, size_t len);
 
                 /*
                  * notice: the string must be terminated with '\0'
                  */
-                explicit StringData(const char* c);
+                explicit BasicStringData(const char* c);
 
-                explicit StringData(const char* c, size_t len);
+                explicit BasicStringData(const char* c, size_t len);
 
                 /*
-                 * init StringData with special free buffer length and empty content
+                 * init BasicStringData with special free buffer length and empty content
                  */
-                explicit StringData(size_t len);
+                explicit BasicStringData(size_t len);
 
                 /*copy constructor remains*/
-                StringData(const StringData& other){
-                    StringData(other._data, other._len);
+                BasicStringData(const BasicStringData& other){
+                    BasicStringData(other._data, other._len);
                 }
 
-                virtual ~StringData();
+                virtual ~BasicStringData();
 
                 size_t size() const{return _len;}
 
-                int compare(const StringData& other) const;
+                int compare(const BasicStringData& other) const;
 
                 /*
                  *notice: if the parameter len is not passed from the caller, the append_str must be terminated with '\0'
                  */
-                StringData& append(const char* append_str, size_t len = 0);
-                StringData& append(const StringData& another);
+                BasicStringData& append(const char* append_str, size_t len = 0);
+                BasicStringData& append(const BasicStringData& another);
 
-                StringData subStr(size_t start_pos, size_t len = string::npos) const;
+                BasicStringData subStr(size_t start_pos, size_t len = string::npos) const;
 
                 void copyTo(char* dest, bool include_ending_null) const;
 
                 size_t find(char c, size_t from_pos = 0) const;
 
-                size_t find(const StringData& needle) const;
+                size_t find(const BasicStringData& needle) const;
 
                 size_t rfind(char c, size_t from_pos = string::npos) const;
 
-                bool startsWith(const StringData& prefix) const;
+                bool startsWith(const BasicStringData& prefix) const;
 
-                bool endsWith(const StringData& suffix) const;
+                bool endsWith(const BasicStringData& suffix) const;
 
                 bool empty() const {return _len == 0; }
 
-                bool equals(const StringData& other) const;
+                bool equals(const BasicStringData& other) const;
 
                 string toString() const{return string(_data);}
 
@@ -93,38 +98,44 @@ namespace lightdis{
                 size_t _free;
                 char* _data;
                 void makeRoomForAppend(size_t required_len);
-                DISALLOW_ASSIGN(StringData);
+                DISALLOW_ASSIGN(BasicStringData);
         };
 
-
-        inline bool operator==(const StringData& lhs, const StringData& rhs) {
+        template<class _alloc>
+        inline bool operator==(const BasicStringData<_alloc>& lhs, const BasicStringData<_alloc>& rhs) {
             return lhs.compare(rhs) == 0;
         }
 
-        inline bool operator!=(const StringData& lhs, const StringData& rhs) {
+        template<class _alloc>
+        inline bool operator!=(const BasicStringData<_alloc>& lhs, const BasicStringData<_alloc>& rhs) {
             return lhs.compare(rhs) != 0;
         }
 
-        inline bool operator<(const StringData& lhs, const StringData& rhs) {
+        template<class _alloc>
+        inline bool operator<(const BasicStringData<_alloc>& lhs, const BasicStringData<_alloc>& rhs) {
             return lhs.compare(rhs) < 0 ;
         }
 
-        inline bool operator<=(const StringData& lhs, const StringData& rhs) {
+        template<class _alloc>
+        inline bool operator<=(const BasicStringData<_alloc>& lhs, const BasicStringData<_alloc>& rhs) {
             return lhs.compare(rhs) <= 0;
         }
 
-        inline bool operator>(const StringData& lhs, const StringData& rhs) {
+        template<class _alloc>
+        inline bool operator>(const BasicStringData<_alloc>& lhs, const BasicStringData<_alloc>& rhs) {
             return lhs.compare(rhs) > 0;
         }
 
-        inline bool operator>=(const StringData& lhs, const StringData& rhs) {
+        template<class _alloc>
+        inline bool operator>=(const BasicStringData<_alloc>& lhs, const BasicStringData<_alloc>& rhs) {
             return lhs.compare(rhs) >= 0;
         }
 
-        ostream& operator<< (std::ostream& stream, const StringData& value);
+        template<class _alloc>
+        ostream& operator<< (std::ostream& stream, const BasicStringData<_alloc>& value);
 
     }
 }
 
 #include "base/string_data_inl.h"
-#endif /* StringData_H_ */
+#endif /* BasicStringData_H_ */
