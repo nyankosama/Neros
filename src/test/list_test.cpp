@@ -1,3 +1,14 @@
+/*=============================================================================
+#
+# Author: liangrui.hlr email:i@nyankosama.com
+#
+# Last modified: 2014-04-02 02:53
+#
+# Filename: list_test.cpp
+#
+# Description: 
+#
+=============================================================================*/
 #include <string>
 #include "unittest/unittest.h"
 #include "base/list.h"
@@ -43,7 +54,7 @@ namespace lightdis{
 
         TEST(LIST, POP_AT){
             int a = 0;
-            ListIterator<int> iter = list->begin();
+            List<int>::iterator iter = list->begin();
             ++iter;
             list->popAt(iter, a);
             ASSERT_EQUALS(a, 1);
@@ -74,7 +85,7 @@ namespace lightdis{
         }
 
         TEST(LIST, PUSH_AT){
-            ListIterator<int> iter = list->begin();
+            List<int>::iterator iter = list->begin();
             ++iter;
             list->pushAt(iter, 10);
             ASSERT_EQUALS(list->size(), 6);
@@ -90,10 +101,10 @@ namespace lightdis{
         }
 
         TEST(LIST, ERASE){
-            ListIterator<int> iter = list->begin();
+            List<int>::iterator iter = list->begin();
             list->erase(iter);
             ASSERT_EQUALS(list->size(), 4);
-            ListIterator<int> iter1 = list->begin();
+            List<int>::iterator iter1 = list->begin();
             ASSERT_EQUALS(*iter1, 1);
         }
 
@@ -104,7 +115,7 @@ namespace lightdis{
         }
 
         TEST(LIST, FIND){
-            ListIterator<int> iter;
+            List<int>::iterator iter;
             int ret = list->find(1, iter);
             ASSERT_EQUALS(*iter, 1); 
             ASSERT_EQUALS(ret, 0);
