@@ -17,7 +17,7 @@
 
 namespace lightdis{
     namespace base{
-        template <class T, class Allocator> class List;
+        template <class T, class Allocator_> class List;
         
         template<class T>
             struct ListNode{
@@ -56,12 +56,12 @@ namespace lightdis{
         
         
         //TODO 需要const iterator的实现
-        template <class T, class Allocator = std::allocator<ListNode<T> > >
+        template <class T, class Allocator_ = std::allocator<ListNode<T> > >
             class List {
                 public:
-                    typedef List<T, Allocator> self_t;
+                    typedef List<T, Allocator_> self_t;
                     typedef T value_type;
-                    typedef Allocator allocator_t;
+                    typedef Allocator_ allocator_t;
                     typedef ListIterator<self_t> iterator;
                     typedef ListNode<value_type> node_t;
 

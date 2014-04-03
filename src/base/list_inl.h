@@ -70,20 +70,20 @@ namespace lightdis{
             }
 
 
-        template<class T, class _alloc>
-            List<T, _alloc>::List() {
+        template<class T, class Allocator_>
+            List<T, Allocator_>::List() {
                 _len = 0;
                 _head = NULL;
                 _tail = NULL;
             }
 
-        template<class T, class _alloc>
-            List<T, _alloc>::~List() {
+        template<class T, class Allocator_>
+            List<T, Allocator_>::~List() {
                 clearAll();
             }
 
-        template<class T, class _alloc>
-            List<T, _alloc>::List(const List<value_type>& list) {
+        template<class T, class Allocator_>
+            List<T, Allocator_>::List(const List<value_type>& list) {
                 _len = list._len;
                 node_t* before = NULL;
                 node_t* current = NULL;
@@ -113,8 +113,8 @@ namespace lightdis{
             }
 
 
-        template<class T, class _alloc>
-            inline int List<T, _alloc>::popFront(value_type& val) {
+        template<class T, class Allocator_>
+            inline int List<T, Allocator_>::popFront(value_type& val) {
                 if (empty()){
                     return FAIL;
                 }
@@ -127,8 +127,8 @@ namespace lightdis{
                 return SUCCESS;
             }
 
-        template<class T, class _alloc>
-            inline int List<T, _alloc>::popBack(value_type& val) {
+        template<class T, class Allocator_>
+            inline int List<T, Allocator_>::popBack(value_type& val) {
                 if (empty()){
                     return FAIL; 
                 }
@@ -141,8 +141,8 @@ namespace lightdis{
                 return SUCCESS;
             }
 
-        template<class T, class _alloc>
-            inline int List<T, _alloc>::popAt(const iterator& iter, T& val) {
+        template<class T, class Allocator_>
+            inline int List<T, Allocator_>::popAt(const iterator& iter, T& val) {
                 int ret = erase(iter);
                 if (ret != SUCCESS){
                     return FAIL;
@@ -151,8 +151,8 @@ namespace lightdis{
                 return SUCCESS;
             }
 
-        template<class T, class _alloc>
-            inline int List<T, _alloc>::popAt(size_t index, value_type& val) {
+        template<class T, class Allocator_>
+            inline int List<T, Allocator_>::popAt(size_t index, value_type& val) {
                 iterator iter = begin();
                 for (int i=0; iter != end() && i < index; ++iter, i++){}
                 if (iter == end())
@@ -161,8 +161,8 @@ namespace lightdis{
                 return SUCCESS;
             }
 
-        template<class T, class _alloc>
-            inline int List<T, _alloc>::pushBack(const value_type& val) {
+        template<class T, class Allocator_>
+            inline int List<T, Allocator_>::pushBack(const value_type& val) {
                 if (_len == 0) {
                     _head = createNode(val);
                     _tail = _head;
@@ -178,8 +178,8 @@ namespace lightdis{
                 return SUCCESS;
             }
 
-        template<class T, class _alloc>
-            inline int List<T, _alloc>::pushFront(const value_type& val) {
+        template<class T, class Allocator_>
+            inline int List<T, Allocator_>::pushFront(const value_type& val) {
                 if (_len == 0){
                     _head = createNode(val);
                     _tail = _head;
@@ -195,8 +195,8 @@ namespace lightdis{
                 return SUCCESS;
             }
 
-        template<class T, class _alloc>
-            inline int List<T, _alloc>::pushAt(const iterator& index, const value_type& val) {
+        template<class T, class Allocator_>
+            inline int List<T, Allocator_>::pushAt(const iterator& index, const value_type& val) {
                 node_t* next = index._lin->next;
                 node_t* new_node = createNode(val);
                 new_node->prev = index._lin;
@@ -210,8 +210,8 @@ namespace lightdis{
             }
 
 
-        template<class T, class _alloc>
-            inline int List<T, _alloc>::clearAll() {
+        template<class T, class Allocator_>
+            inline int List<T, Allocator_>::clearAll() {
                 node_t* before = NULL;
                 for (iterator iter = begin(); iter != end();){
                     before = iter._lin;
@@ -227,8 +227,8 @@ namespace lightdis{
 
         
         //TODO 这里没有判断node是否为该list中的node，可能会错误传入其他list中的node 
-        template<class T, class _alloc>
-            inline int List<T, _alloc>::erase(const iterator& iter) {
+        template<class T, class Allocator_>
+            inline int List<T, Allocator_>::erase(const iterator& iter) {
                 node_t* prev = 0;
                 node_t* next = 0;
                 if (iter._lin == _head) {
@@ -253,43 +253,43 @@ namespace lightdis{
             }
 
         /*
-        template<class T, class _alloc>
-            inline T* List<T, _alloc>::copyT(const value_type* t){
+        template<class T, class Allocator_>
+            inline T* List<T, Allocator_>::copyT(const value_type* t){
                 //TODO 这里sizeof是否能正确得出大小有待验证
                 void* dest = malloc(sizeof(value_type));
                 memcpy(dest, t, sizeof(value_type));
                 return static_cast<value_type*>(dest);
             }*/
 
-        template<class T, class _alloc>
-            inline typename List<T, _alloc>::node_t* List<T, _alloc>::createNode(const value_type& value){
+        template<class T, class Allocator_>
+            inline typename List<T, Allocator_>::node_t* List<T, Allocator_>::createNode(const value_type& value){
                 node_t* ptr = _allocator.allocate(1);
                 new ((void*)(&(ptr->value))) value_type(value);
                 return ptr;
             }
 
-        template<class T, class _alloc>
-            inline int List<T, _alloc>::destroyNode(node_t* node){
+        template<class T, class Allocator_>
+            inline int List<T, Allocator_>::destroyNode(node_t* node){
                 node->value.~value_type();
                 _allocator.deallocate(node, 1);
                 return SUCCESS;
             }
 
 
-        template<class T, class _alloc>
-            typename List<T, _alloc>::iterator List<T, _alloc>::begin() const{
+        template<class T, class Allocator_>
+            typename List<T, Allocator_>::iterator List<T, Allocator_>::begin() const{
                 return iterator(_head);
             }
 
 
-        template<class T, class _alloc>
-            typename List<T, _alloc>::iterator List<T, _alloc>::end() const{
+        template<class T, class Allocator_>
+            typename List<T, Allocator_>::iterator List<T, Allocator_>::end() const{
                 return iterator();
             }
 
 
-        template<class T, class _alloc>
-            int List<T, _alloc>::find(const value_type& t, iterator& val){
+        template<class T, class Allocator_>
+            int List<T, Allocator_>::find(const value_type& t, iterator& val){
                 for (iterator iter = begin(); iter != end(); ++iter)            {
                     if (*iter == t){
                         val._lin = iter._lin;

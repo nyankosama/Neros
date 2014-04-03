@@ -15,6 +15,9 @@
 #define SUCCESS 0
 #define FAIL -1
 
+//dict.h
+#define DICT_DEFAULT_INDEX_NUM 5
+
 namespace lightdis{
     namespace base{
 
