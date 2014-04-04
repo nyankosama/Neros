@@ -71,7 +71,7 @@ namespace lightdis{
 
 
         template<class T, class Allocator_>
-            List<T, Allocator_>::List() {
+            List<T, Allocator_>::List():_allocator(allocator_t()) {
                 _len = 0;
                 _head = NULL;
                 _tail = NULL;
@@ -90,14 +90,14 @@ namespace lightdis{
 
                 for (iterator iter = list.begin(); iter != list.end(); ++iter){
                     if (iter == list.begin()){
-                        current = createNode(iter._lin->value);
+                        current = _createNode(iter._lin->value);
                         current->prev = NULL;
                         _head = current;
                         before = current;
                         continue;
                     }
                     else if (iter == list.end()){
-                        current = createNode(iter._lin->value);
+                        current = _createNode(iter._lin->value);
                         current->prev = before;
                         current->prev->next = current;
                         current->next = NULL;
@@ -105,7 +105,7 @@ namespace lightdis{
                         continue;
                     }
 
-                    current = createNode(iter._lin->value);
+                    current = _createNode(iter._lin->value);
                     current->prev = before;
                     current->prev->next = current;
                     before = current;
@@ -164,12 +164,12 @@ namespace lightdis{
         template<class T, class Allocator_>
             inline int List<T, Allocator_>::pushBack(const value_type& val) {
                 if (_len == 0) {
-                    _head = createNode(val);
+                    _head = _createNode(val);
                     _tail = _head;
                     _head->next = NULL;
                     _head->prev = NULL;
                 } else {
-                    _tail->next = createNode(val);
+                    _tail->next = _createNode(val);
                     _tail->next->prev = _tail;
                     _tail->next->next = NULL;
                     _tail = _tail->next;
@@ -181,12 +181,12 @@ namespace lightdis{
         template<class T, class Allocator_>
             inline int List<T, Allocator_>::pushFront(const value_type& val) {
                 if (_len == 0){
-                    _head = createNode(val);
+                    _head = _createNode(val);
                     _tail = _head;
                     _head->next = NULL;
                     _head->prev = NULL;
                 } else{
-                    _head->prev = createNode(val);
+                    _head->prev = _createNode(val);
                     _head->prev->next = _head;
                     _head->prev->prev = NULL;
                     _head = _head->prev;
@@ -198,7 +198,7 @@ namespace lightdis{
         template<class T, class Allocator_>
             inline int List<T, Allocator_>::pushAt(const iterator& index, const value_type& val) {
                 node_t* next = index._lin->next;
-                node_t* new_node = createNode(val);
+                node_t* new_node = _createNode(val);
                 new_node->prev = index._lin;
                 index._lin->next = new_node;
                 new_node->next = next;
@@ -216,7 +216,7 @@ namespace lightdis{
                 for (iterator iter = begin(); iter != end();){
                     before = iter._lin;
                     ++iter;
-                    destroyNode(before);
+                    _destroyNode(before);
                 }
                 size_t size = _len;
                 _len = 0;
@@ -262,15 +262,14 @@ namespace lightdis{
             }*/
 
         template<class T, class Allocator_>
-            inline typename List<T, Allocator_>::node_t* List<T, Allocator_>::createNode(const value_type& value){
+            inline typename List<T, Allocator_>::node_t* List<T, Allocator_>::_createNode(const value_type& value){
                 node_t* ptr = _allocator.allocate(1);
                 new ((void*)(&(ptr->value))) value_type(value);
                 return ptr;
             }
 
         template<class T, class Allocator_>
-            inline int List<T, Allocator_>::destroyNode(node_t* node){
-                node->value.~value_type();
+            inline int List<T, Allocator_>::_destroyNode(node_t* node){ node->value.~value_type();
                 _allocator.deallocate(node, 1);
                 return SUCCESS;
             }

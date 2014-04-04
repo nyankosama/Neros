@@ -16,20 +16,20 @@ namespace lightdis{
         BasicStringData<Allocator_>::BasicStringData(){
             _free = 0;
             _len = 0;
-            _data = createSpace(1);
+            _data = _createSpace(1);
             _data[0] = '\0';
         }
 
 
         template<class Allocator_>
         BasicStringData<Allocator_>::~BasicStringData() {
-            destroySpace(_data, _len + _free + 1);
+            _destroySpace(_data, _len + _free + 1);
         }
 
         template<class Allocator_>
         BasicStringData<Allocator_>::BasicStringData(const char* c){
             _len = strlen(c);
-            _data = createSpace(_len * 2 + 1);
+            _data = _createSpace(_len * 2 + 1);
             _free = _len;
             memcpy(_data, c, _len+1);
             _data[_len] = '\0';
@@ -39,7 +39,7 @@ namespace lightdis{
         BasicStringData<Allocator_>::BasicStringData(const char* c, size_t len) {
             this->_len = len;
             _free = len;
-            _data = createSpace(len * 2 + 1);
+            _data = _createSpace(len * 2 + 1);
             memcpy(_data, c, _len+1);
             _data[_len] = '\0';
         }
@@ -48,7 +48,7 @@ namespace lightdis{
         BasicStringData<Allocator_>::BasicStringData(const string& c){
             const char* c_str = c.c_str();
             _len = strlen (c_str);
-            _data = createSpace(_len * 2 + 1);
+            _data = _createSpace(_len * 2 + 1);
             _free = _len;
             memcpy(_data, c_str, _len+1);
             _data[_len] = '\0';
@@ -58,7 +58,7 @@ namespace lightdis{
         BasicStringData<Allocator_>::BasicStringData(size_t free){
             this->_len = 0;
             _free = free;
-            _data = createSpace(free + 1);
+            _data = _createSpace(free + 1);
             _data[0]='\0';
         }
 
@@ -81,7 +81,7 @@ namespace lightdis{
             if (len == 0){
                 len = strlen(app_str);
             }
-            makeRoomForAppend(len);
+            _makeRoomForAppend(len);
             memcpy(_data+_len, app_str, len+1);
             _len += len;
             _free -= len;
@@ -124,7 +124,7 @@ namespace lightdis{
 
 
         template<class Allocator_>
-        inline void BasicStringData<Allocator_>::makeRoomForAppend(size_t required_len){
+        inline void BasicStringData<Allocator_>::_makeRoomForAppend(size_t required_len){
             if (_free >= required_len)
                 return;
 
@@ -135,9 +135,9 @@ namespace lightdis{
             else
                 newlen += STRING_DATA_MAX_PREALLOC;
 
-            char* tmp = createSpace(newlen + 1);
+            char* tmp = _createSpace(newlen + 1);
             memcpy(tmp, _data, _len+1);
-            destroySpace(_data, _len + _free + 1);
+            _destroySpace(_data, _len + _free + 1);
             _data = tmp;
             _free = newlen - _len;
         }       
@@ -217,13 +217,13 @@ namespace lightdis{
         }
 
         template<class Allocator_>
-        inline char* BasicStringData<Allocator_>::createSpace(size_t size){
+        inline char* BasicStringData<Allocator_>::_createSpace(size_t size){
             char* ptr = _allocator.allocate(size);
             return ptr;
         }
 
         template<class Allocator_>
-        inline int BasicStringData<Allocator_>::destroySpace(char* ptr, size_t size){
+        inline int BasicStringData<Allocator_>::_destroySpace(char* ptr, size_t size){
             _allocator.deallocate(ptr, size);
         }
 

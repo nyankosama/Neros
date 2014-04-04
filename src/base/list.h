@@ -99,9 +99,9 @@ namespace lightdis{
                     int find(const value_type& key, iterator& val);
 
                 private:
-                    node_t* createNode(const value_type& value);
-                    int destroyNode(node_t* node);
-                    int remove(node_t* node);
+                    node_t* _createNode(const value_type& value);
+                    int _destroyNode(node_t* node);
+                    int _remove(node_t* node);
                     DISALLOW_ASSIGN(List);
 
             };

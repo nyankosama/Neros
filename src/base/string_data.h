@@ -28,9 +28,9 @@ namespace lightdis{
                 size_t _free;
                 char* _data;
                 allocator_t _allocator;
-                void makeRoomForAppend(size_t required_len);
-                char* createSpace(size_t size);
-                int destroySpace(char* ptr, size_t size);
+                void _makeRoomForAppend(size_t required_len);
+                char* _createSpace(size_t size);
+                int _destroySpace(char* ptr, size_t size);
                 DISALLOW_ASSIGN(BasicStringData);
 
             public:
