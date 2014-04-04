@@ -36,14 +36,23 @@ namespace lightdis{
                 friend class Dict<key_t, value_t, typename Dict_::allocator_t>;
         };
 
-        template <class Dict_> struct _DictHashTable{
-            typedef typename Dict_::key_t key_t;
-            typedef typename Dict_::value_t value_t;
-            typedef _DictNode<key_t, value_t> entry_node;
+        template <class Dict_> class _DictHashTable{
+            public: 
+                typedef typename Dict_::key_t key_t;
+                typedef typename Dict_::value_t value_t;
+                typedef typename Dict_::allocator allocator_t;
+                typedef _DictNode<key_t, value_t> entry_node;
 
-            List<entry_node>* table;
-            size_t size;//table指针数组的大小
-            size_t used_node;//table指针数组使用的节点的数目
+                friend class Dict<key_t, value_t, typename Dict_::allocator_t>;
+
+            public:
+                _DictHashTable(int table_size);
+
+            private:
+                List<entry_node>* _table;
+                allocator_t _allocator;
+                size_t _size;//table指针数组的大小
+                size_t _used_node;//table指针数组使用的节点的数目
         };
 
         template <class Key_, 
@@ -78,7 +87,7 @@ namespace lightdis{
                          private:
                              hash_table* _first_table;
                              hash_table* _second_table;
-                             size_t rehashidx; //当前rehash已完成的索引号，-1表示rehash未进行
+                             size_t _rehashidx; //当前rehash已完成的索引号，-1表示rehash未进行
                      };
 
     }
