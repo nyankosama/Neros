@@ -15,8 +15,14 @@
 #define SUCCESS 0
 #define FAIL -1
 
-//dict.h
+//======dict.h======
 #define DICT_DEFAULT_INDEX_NUM 5
+
+//error code
+#define DICT_ERR_KEY_EXISTS 1 //键已存在，无法插入
+#define DICT_ERR_KEY_NOT_EXISTES 2 //键不存在
+
+//======dict.h end======
 
 namespace lightdis{
     namespace base{
