@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <memory>
 #include "base/macro.h"
+#include "base/constants.h"
 
 namespace lightdis{
     namespace base{
@@ -78,15 +79,15 @@ namespace lightdis{
                     List();
                     virtual ~List();
                     List(const List<value_type>& list);
-                    int popFront(value_type& val);
-                    int popBack(value_type& val);
-                    int popAt(const iterator& iter, value_type& val);
-                    int popAt(size_t index, value_type& val);
+                    int popFront();
+                    int popBack();
+                    int popAt(const iterator& iter);
+                    int popAt(size_t index);
 
                     //all push methods will copy the val object
-                    int pushBack(const value_type& val);
-                    int pushFront(const value_type& val);
-                    int pushAt(const iterator& index, const value_type& val);
+                    void pushBack(const value_type& val);
+                    void pushFront(const value_type& val);
+                    void pushAt(const iterator& index, const value_type& val);
                     int clearAll();//return the elements it removed
                     int erase(const iterator& iter);
                     bool empty() const{return _len == 0;}
@@ -95,15 +96,15 @@ namespace lightdis{
 
                     iterator begin() const;
                     iterator end() const;
+                    iterator rbegin() const;
+                    iterator rend() const;
                     
-                    int find(const value_type& key, iterator& val);
+                    iterator find(const value_type& key, int& err_code = ERR_REF);
 
                 private:
                     node_t* _createNode(const value_type& value);
-                    int _destroyNode(node_t* node);
-                    int _remove(node_t* node);
+                    void _destroyNode(node_t* node);
                     DISALLOW_ASSIGN(List);
-
             };
     }
 }

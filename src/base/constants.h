@@ -12,8 +12,12 @@
 #ifndef BASE_CONSTRANT_H_
 #define BASE_CONSTRANT_H_
 
+//======common=====
+
 #define SUCCESS 0
 #define FAIL -1
+
+int ERR_REF = 0;//用作errcode引用的默认参数赋值
 
 //======dict.h======
 #define DICT_DEFAULT_INDEX_NUM 5

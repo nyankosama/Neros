@@ -10,6 +10,7 @@
 #
 =============================================================================*/
 #include <string>
+#include <iostream>
 #include "unittest/unittest.h"
 #include "base/list.h"
 
@@ -39,49 +40,47 @@ namespace lightdis{
         }
 
         TEST(LIST, POP_FRONT){
-            int a = 5;
-            list->popFront(a);
-            ASSERT_EQUALS(a, 0);
+            list->popFront();
+            ASSERT_EQUALS(*(list->begin()), 1);
             ASSERT_EQUALS(list->size(), 4);
         }
 
         TEST(LIST, POP_BACK){
-            int a = 0;
-            list->popBack(a);
-            ASSERT_EQUALS(a, 4);
+            list->popBack();
+            ASSERT_EQUALS(*(list->rbegin()), 3);
             ASSERT_EQUALS(list->size(), 4);
         }
 
         TEST(LIST, POP_AT){
-            int a = 0;
             List<int>::iterator iter = list->begin();
             ++iter;
-            list->popAt(iter, a);
-            ASSERT_EQUALS(a, 1);
+            list->popAt(iter);
+            List<int>::iterator iter1 = list->begin();
+            ++iter1;
+            ASSERT_EQUALS(*iter1, 2);
             ASSERT_EQUALS(list->size(), 4);
         }
 
         TEST(LIST, POP_AT_INDEX){
-            int a = 0;
-            list->popAt(1, a);
-            ASSERT_EQUALS(a, 1);
+            list->popAt(1);
+            List<int>::iterator iter = list->begin();
+            ++iter;
+            ASSERT_EQUALS(*iter, 2);
             ASSERT_EQUALS(list->size(), 4);
         }
 
         TEST(LIST, PUSH_BACK){
             list->pushBack(5);
             ASSERT_EQUALS(list->size(), 6);
-            int a = 0;
-            list->popAt(5, a);
-            ASSERT_EQUALS(a, 5);
+            List<int>::iterator iter = list->rbegin();
+            ASSERT_EQUALS(*iter, 5);
         }
 
         TEST(LIST, PUSH_FRONT){
             list->pushFront(-1);
             ASSERT_EQUALS(list->size(), 6);
-            int a = 0;
-            list->popAt(0, a);
-            ASSERT_EQUALS(a, -1);
+            List<int>::iterator iter = list->begin();
+            ASSERT_EQUALS(*iter, -1);
         }
 
         TEST(LIST, PUSH_AT){
@@ -89,10 +88,10 @@ namespace lightdis{
             ++iter;
             list->pushAt(iter, 10);
             ASSERT_EQUALS(list->size(), 6);
-            int a = 0;
+            iter = list->begin();
             ++iter;
-            list->popAt(iter, a);
-            ASSERT_EQUALS(a, 10);
+            ++iter;
+            ASSERT_EQUALS(*iter, 10);
         }
 
         TEST(LIST, CLEAR_ALL){
@@ -115,10 +114,10 @@ namespace lightdis{
         }
 
         TEST(LIST, FIND){
-            List<int>::iterator iter;
-            int ret = list->find(1, iter);
+            List<int>::iterator iter = list->find(1);
             ASSERT_EQUALS(*iter, 1); 
-            ASSERT_EQUALS(ret, 0);
+            ++iter;
+            ASSERT_EQUALS(*iter, 2);
         }
     }
 }
