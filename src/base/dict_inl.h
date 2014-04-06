@@ -12,12 +12,17 @@
 #ifndef _BASE_DICT_INL_H_
 #define _BASE_DICT_INL_H_
 
+
 #define _DICT_TEMPLATE \
-    template<class Key_, class Value_, class Allocator_, class PtrAllocator_>
+    template<class Key_, class Value_, class Allocator_, class BucketAllocator_>
 #define _DICT_HEAD \
-    Dict<Key_, Value_, Allocator_, PtrAllocator_>
+    Dict<Key_, Value_, Allocator_, BucketAllocator_>
+
+#define _VALUE_T \
+    typename Dict<Key_, Value_, Allocator_, BucketAllocator_>::value_t
 
 #include "base/dict.h"
+
 
 namespace lightdis{
     namespace base{
@@ -46,6 +51,28 @@ namespace lightdis{
                 return ret;
             }
 
+        
+        _DICT_TEMPLATE
+            _VALUE_T _DICT_HEAD::get(const key_t& key, int& err_code){
+                size_t index = _key_hash(key) % _size;
+                int ret = 0;
+                if (_rehashidx == -1){//没有rehash
+                    bucket& bc = _table[index];
+                    value_t& val = _getWithBucket(bc, key, ret);
+                    if (ret != SUCCESS){
+                        err_code = ret;
+                        return NULL;
+                    }
+                    else{
+                        return val; 
+                    }
+                }
+                else{//正在rehash
+                    //TODO not implemented
+                }
+
+            }
+
         _DICT_TEMPLATE 
             int _DICT_HEAD::_copyConstructNode(entry_node*& node, const key_t& key, const value_t& value){
                 node = _allocator.allocate(1);
@@ -54,22 +81,22 @@ namespace lightdis{
                 return SUCCESS;
             }
 
-        _DICT_TEMPLATE
-            int _DICT_HEAD::get(const key_t& key, value_t& out){
-                size_t index = _key_hash(key) % _size;
-                if (_rehashidx == -1){
-                    
-                }
-
-            }
 
         _DICT_TEMPLATE
-        int _DICT_HEAD::_getWithBucket(const bucket& bc, const key_t& key, value_t& out){
+        _VALUE_T* _DICT_HEAD::_getWithBucket(const bucket& bc, const key_t& key, int& err_code){
             if (bc.begin == NULL){
-                return DICT_ERR_KEY_NOT_EXISTES;
+                err_code = DICT_ERR_KEY_NOT_EXISTES;
+                return NULL;
             } 
             else{
                 entry_node* iter = bc.begin;     
+                do{
+                    if(iter->key == key){
+                        return &(iter->value); 
+                    }
+                }while(iter->next != NULL);
+                err_code = DICT_ERR_KEY_NOT_EXISTES;
+                return NULL;
             }
         }
 
@@ -91,11 +118,6 @@ namespace lightdis{
                     bc.bucket_size ++;
                     return SUCCESS;
                 }
-            }
-
-        _DICT_TEMPLATE
-            entry_node* _DICT_HEAD::findWithKey(const key_t& key){
-
             }
     }
 }

@@ -2,7 +2,7 @@
 #
 # Author: liangrui.hlr email:i@nyankosama.com
 #
-# Last modified:	2014-04-03 00:11
+# Last modified:	2014-04-06 05:09
 #
 # Filename:		dict.h
 #
@@ -15,8 +15,6 @@
 #include <memory>
 #include <cstdlib>
 #include <functional>
-#include "base/constants.h"
-#include "base/list.h"
 #include "base/constants.h"
 
 namespace lightdis{
@@ -72,10 +70,10 @@ namespace lightdis{
                              }
                              bool empty();
                              int put(const key_t& key, const value_t& value);
-                             int get(const key_t& key, value_t& out);
-                             int replace(key_t key, value_t value);
-                             int deleteKey(const key_t& key, value_t& out);
-                             int getRandomKey(key_t& out);
+                             value_t get(const key_t& key, int& err_code = ERR_REF);
+                             int replace(const key_t& key, const value_t& value);
+                             int deleteKey(const key_t& key);
+                             key_t getRandomKey(int& err_code = ERR_REF);
                              int clearDict();
                              int resizeAll();
                              int resizeStep(size_t step);
@@ -85,7 +83,7 @@ namespace lightdis{
                          private:
                              int _copyConstructNode(entry_node*& node, const key_t& key, const value_t& value);
                              int _putWithBucket(const bucket& bc, const key_t& key, const value_t& value);
-                             int _getWithBucket(const bucket& bc, const key_t& key, value_t& out);
+                             value_t* _getWithBucket(const bucket& bc, const key_t& key, int& err_code = ERR_REF);
 
                          private:
                              bucket* _table;
