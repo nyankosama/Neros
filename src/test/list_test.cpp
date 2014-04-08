@@ -37,6 +37,7 @@ namespace lightdis{
             List<int> copy(*list);
             int ele = *(copy.begin());
             ASSERT_EQUALS(ele, 0);
+            ASSERT_EQUALS(copy.size(), 5);
         }
 
         TEST(LIST, POP_FRONT){
@@ -118,6 +119,14 @@ namespace lightdis{
             ASSERT_EQUALS(*iter, 1); 
             ++iter;
             ASSERT_EQUALS(*iter, 2);
+        }
+
+        TEST(LIST, ASSIGN){
+            List<int> other;
+            other = *list;
+            List<int>::iterator iter = other.begin();
+            ASSERT_EQUALS(*iter, 0);
+            ASSERT_EQUALS(other.size(), 5);
         }
     }
 }

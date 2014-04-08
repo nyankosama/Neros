@@ -1,5 +1,5 @@
 /*=============================================================================
-iter._lin->value#
+  iter._lin->value#
 # Author: liangrui.hlr email:i@nyankosama.com
 #
 # Last modified:	2014-04-02 02:53
@@ -105,32 +105,7 @@ namespace lightdis{
 
         _LIST_TEMPLATE
             _LIST_HEAD::List(const List<value_type>& list) {
-                _len = list._len;
-                node_t* before = NULL;
-                node_t* current = NULL;
-
-                for (iterator iter = list.begin(); iter != list.end(); ++iter){
-                    if (iter == list.begin()){
-                        current = _createNode(iter._lin->value);
-                        current->prev = NULL;
-                        _head = current;
-                        before = current;
-                        continue;
-                    }
-                    else if (iter == list.end()){
-                        current = _createNode(iter._lin->value);
-                        current->prev = before;
-                        current->prev->next = current;
-                        current->next = NULL;
-                        _tail = current;
-                        continue;
-                    }
-
-                    current = _createNode(iter._lin->value);
-                    current->prev = before;
-                    current->prev->next = current;
-                    before = current;
-                }
+                _copyList(list);
             }
 
 
@@ -225,7 +200,7 @@ namespace lightdis{
                 return size;
             }
 
-        
+
         //TODO 这里没有判断node是否为该list中的node，可能会错误传入其他list中的node 
         _LIST_TEMPLATE
             inline int _LIST_HEAD::erase(const iterator& iter) {
@@ -254,13 +229,13 @@ namespace lightdis{
             }
 
         /*
-        _LIST_TEMPLATE
-            inline T* _LIST_HEAD::copyT(const value_type* t){
-                //TODO 这里sizeof是否能正确得出大小有待验证
-                void* dest = malloc(sizeof(value_type));
-                memcpy(dest, t, sizeof(value_type));
-                return static_cast<value_type*>(dest);
-            }*/
+           _LIST_TEMPLATE
+           inline T* _LIST_HEAD::copyT(const value_type* t){
+        //TODO 这里sizeof是否能正确得出大小有待验证
+        void* dest = malloc(sizeof(value_type));
+        memcpy(dest, t, sizeof(value_type));
+        return static_cast<value_type*>(dest);
+        }*/
 
         _LIST_TEMPLATE
             inline typename _LIST_HEAD::node_t* _LIST_HEAD::_createNode(const value_type& value){
@@ -308,6 +283,43 @@ namespace lightdis{
                 }
                 err_code = FAIL;
                 return NULL;
+            }
+
+        _LIST_TEMPLATE
+            void _LIST_HEAD::_copyList(const self_t& list){
+                _len = list._len;
+                node_t* before = NULL;
+                node_t* current = NULL;
+
+                for (iterator iter = list.begin(); iter != list.end(); ++iter){
+                    if (iter == list.begin()){
+                        current = _createNode(iter._lin->value);
+                        current->prev = NULL;
+                        _head = current;
+                        before = current;
+                        continue;
+                    }
+                    else if (iter == list.rbegin()){
+                        current = _createNode(iter._lin->value);
+                        current->prev = before;
+                        current->prev->next = current;
+                        current->next = NULL;
+                        _tail = current;
+                        continue;
+                    }
+
+                    current = _createNode(iter._lin->value);
+                    current->prev = before;
+                    current->prev->next = current;
+                    before = current;
+
+                }
+            }
+
+        _LIST_TEMPLATE
+            void _LIST_HEAD::operator= (const self_t& r_list){
+                clearAll();  
+                _copyList(r_list);
             }
     }
 }

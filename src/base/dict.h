@@ -82,7 +82,7 @@ namespace lightdis{
 
                          private:
                              int _copyConstructNode(entry_node*& node, const key_t& key, const value_t& value);
-                             int _putWithBucket(const bucket& bc, const key_t& key, const value_t& value);
+                             int _putWithBucket(const bucket& bc, const key_t& key, const value_t& value, bool is_replace);
                              value_t* _getWithBucket(const bucket& bc, const key_t& key, int& err_code = ERR_REF);
 
                          private:

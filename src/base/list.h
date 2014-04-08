@@ -101,11 +101,14 @@ namespace lightdis{
                     
                     iterator find(const value_type& key, int& err_code = ERR_REF);
 
+                    void operator=(const self_t& r_list);
+
                 private:
+                    void _copyList(const self_t& list);
                     node_t* _createNode(const value_type& value);
                     void _destroyNode(node_t* node);
-                    DISALLOW_ASSIGN(List);
             };
+
     }
 }
 

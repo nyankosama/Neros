@@ -42,13 +42,29 @@ namespace lightdis{
                 int ret = 0;
                 if (_rehashidx == -1){//没有rehash
                     bucket& bc = _table[index];
-                    ret = _putWithBucket(bc, key, value);
+                    ret = _putWithBucket(bc, key, value, false);
                 }
                 else{//正在进行rehash
                     bucket& bc = _rehash_table[index];
-                    ret = _putWithBucket(bc, key, value);
+                    ret = _putWithBucket(bc, key, value, false);
                 }
                 return ret;
+            }
+
+        _DICT_TEMPLATE
+            int _DICT_HEAD::replace(const key_t& key, const value_t& value){
+                size_t index = _key_hash(key) % _size;
+                int ret = 0;
+                if (_rehashidx == -1){//没有rehash
+                    bucket& bc = _table[index];
+                    ret = _putWithBucket(bc, key, value, true);
+                }
+                else{//正在进行rehash
+                    bucket& bc = _rehash_table[index];
+                    ret = _putWithBucket(bc, key, value, true);
+                }
+                return ret;
+
             }
 
         
@@ -101,7 +117,7 @@ namespace lightdis{
         }
 
         _DICT_TEMPLATE
-            int _DICT_HEAD::_putWithBucket(const bucket& bc, const key_t& key, const value_t& value){
+            int _DICT_HEAD::_putWithBucket(const bucket& bc, const key_t& key, const value_t& value, bool is_replace){
                 if (bc.begin == NULL){
                     _copyConstructNode(bc.begin, key, value);
                     bc.bucket_size ++;
@@ -110,7 +126,13 @@ namespace lightdis{
                     entry_node* iter = bc.begin; 
                     do{
                         if (iter->key == key){
-                            return DICT_ERR_KEY_EXISTS;
+                            if (is_replace){
+                                iter->value = value; //这里调用赋值操作符
+                                return SUCCESS;
+                            }
+                            else{
+                                return DICT_ERR_KEY_EXISTS;
+                            }
                         }
                     }
                     while (iter->next != NULL);
