@@ -46,6 +46,7 @@ namespace lightdis{
                 friend class Dict<key_t, value_t, allocator_t, bucket_allocator_t>;
         };
 
+
         template <class Key_, 
                  class Value_, 
                  class Allocator_ = std::allocator<_DictNode<Key_, Value_> >,
@@ -73,7 +74,6 @@ namespace lightdis{
                              value_t get(const key_t& key, int& err_code = ERR_REF);
                              int replace(const key_t& key, const value_t& value);
                              int deleteKey(const key_t& key);
-                             key_t getRandomKey(int& err_code = ERR_REF);
                              int clearDict();
                              int resizeAll();
                              int resizeStep(size_t step);
@@ -82,8 +82,11 @@ namespace lightdis{
 
                          private:
                              int _copyConstructNode(entry_node*& node, const key_t& key, const value_t& value);
+                             void _destroyNode(entry_node* node);
                              int _putWithBucket(const bucket& bc, const key_t& key, const value_t& value, bool is_replace);
+                             int _eraseWithBucket(const bucket& bc, const key_t& key);
                              value_t* _getWithBucket(const bucket& bc, const key_t& key, int& err_code = ERR_REF);
+                             size_t _hash(const key_t& key);
 
                          private:
                              bucket* _table;

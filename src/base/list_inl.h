@@ -246,6 +246,7 @@ namespace lightdis{
 
         _LIST_TEMPLATE
             inline void _LIST_HEAD::_destroyNode(node_t* node){ node->value.~value_type();
+                node->value.~value_type();
                 _allocator.deallocate(node, 1);
             }
 

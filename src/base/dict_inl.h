@@ -38,7 +38,7 @@ namespace lightdis{
 
         _DICT_TEMPLATE
             int _DICT_HEAD::put(const key_t& key, const value_t& value){
-                size_t index = _key_hash(key) % _size;
+                size_t index = _hash(key);
                 int ret = 0;
                 if (_rehashidx == -1){//没有rehash
                     bucket& bc = _table[index];
@@ -53,7 +53,7 @@ namespace lightdis{
 
         _DICT_TEMPLATE
             int _DICT_HEAD::replace(const key_t& key, const value_t& value){
-                size_t index = _key_hash(key) % _size;
+                size_t index = _hash(key);
                 int ret = 0;
                 if (_rehashidx == -1){//没有rehash
                     bucket& bc = _table[index];
@@ -67,10 +67,10 @@ namespace lightdis{
 
             }
 
-        
+
         _DICT_TEMPLATE
             _VALUE_T _DICT_HEAD::get(const key_t& key, int& err_code){
-                size_t index = _key_hash(key) % _size;
+                size_t index = _hash(key);
                 int ret = 0;
                 if (_rehashidx == -1){//没有rehash
                     bucket& bc = _table[index];
@@ -89,6 +89,15 @@ namespace lightdis{
 
             }
 
+        _DICT_TEMPLATE
+            int _DICT_HEAD::deleteKey(const key_t& key){
+                size_t index = _hash(key);
+                int ret = 0;
+                bucket& bc = (_rehashidx == -1 ? _table[index] : _rehash_table[index]);
+                ret = _eraseWithBucket(bc, key);
+                return ret;
+            }
+
         _DICT_TEMPLATE 
             int _DICT_HEAD::_copyConstructNode(entry_node*& node, const key_t& key, const value_t& value){
                 node = _allocator.allocate(1);
@@ -97,24 +106,36 @@ namespace lightdis{
                 return SUCCESS;
             }
 
+        _DICT_TEMPLATE
+            void _DICT_HEAD::_destroyNode(entry_node* node){
+                node->key.~key_t();
+                node->value.~value_t();
+                _allocator.deallocate(node, 1);
+            }
 
         _DICT_TEMPLATE
-        _VALUE_T* _DICT_HEAD::_getWithBucket(const bucket& bc, const key_t& key, int& err_code){
-            if (bc.begin == NULL){
-                err_code = DICT_ERR_KEY_NOT_EXISTES;
-                return NULL;
-            } 
-            else{
-                entry_node* iter = bc.begin;     
-                do{
-                    if(iter->key == key){
-                        return &(iter->value); 
-                    }
-                }while(iter->next != NULL);
-                err_code = DICT_ERR_KEY_NOT_EXISTES;
-                return NULL;
+            size_t _DICT_HEAD::_hash(const key_t& key){
+                return _key_hash(key) % _size;
             }
-        }
+
+
+        _DICT_TEMPLATE
+            _VALUE_T* _DICT_HEAD::_getWithBucket(const bucket& bc, const key_t& key, int& err_code){
+                if (bc.begin == NULL){
+                    err_code = DICT_ERR_KEY_NOT_EXISTES;
+                    return NULL;
+                } 
+                else{
+                    entry_node* iter = bc.begin;     
+                    do{
+                        if(iter->key == key){
+                            return &(iter->value); 
+                        }
+                    }while(iter->next != NULL);
+                    err_code = DICT_ERR_KEY_NOT_EXISTES;
+                    return NULL;
+                }
+            }
 
         _DICT_TEMPLATE
             int _DICT_HEAD::_putWithBucket(const bucket& bc, const key_t& key, const value_t& value, bool is_replace){
@@ -140,6 +161,31 @@ namespace lightdis{
                     bc.bucket_size ++;
                     return SUCCESS;
                 }
+            }
+
+        _DICT_TEMPLATE
+            int _DICT_HEAD::_eraseWithBucket(const bucket& bc, const key_t& key){
+                if (bc.begin == NULL){
+                    return DICT_ERR_KEY_NOT_EXISTES;
+                }
+                entry_node* iter = bc.begin;
+                entry_node* before = NULL;
+                do{
+                    if (iter->key == key){
+                        if (iter == bc.begin){
+                            _destroyNode(iter);
+                            bc.begin = NULL;
+                            bc.bucket_size = 0;
+                        }
+                        before = iter->next;
+                        _destroyNode(iter);
+                        bc.bucket_size -= 1;
+                        return SUCCESS;
+                    }
+                    before = iter;
+                }while(iter->next != NULL);
+
+                return DICT_ERR_KEY_NOT_EXISTES;
             }
     }
 }
