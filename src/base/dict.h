@@ -1,7 +1,5 @@
 /*=============================================================================
 #
-# Author: liangrui.hlr email:i@nyankosama.com
-#
 # Last modified:	2014-04-06 05:09
 #
 # Filename:		dict.h
@@ -66,9 +64,7 @@ namespace lightdis{
 
                          public:
                              Dict(size_t table_size = DICT_DEFAULT_INDEX_NUM);
-                             virtual ~Dict(){
-                                 //TODO not implemented
-                             }
+                             virtual ~Dict();
                              bool empty();
                              int put(const key_t& key, const value_t& value);
                              value_t get(const key_t& key, int& err_code = ERR_REF);
@@ -83,6 +79,7 @@ namespace lightdis{
                          private:
                              int _copyConstructNode(entry_node*& node, const key_t& key, const value_t& value);
                              void _destroyNode(entry_node* node);
+                             void _destroyBucket(bucket* bc);
                              int _putWithBucket(const bucket& bc, const key_t& key, const value_t& value, bool is_replace);
                              int _eraseWithBucket(const bucket& bc, const key_t& key);
                              value_t* _getWithBucket(const bucket& bc, const key_t& key, int& err_code = ERR_REF);

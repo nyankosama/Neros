@@ -37,6 +37,11 @@ namespace lightdis{
             }
 
         _DICT_TEMPLATE
+            _DICT_HEAD::~Dict(){
+                clearDict(); 
+            }
+
+        _DICT_TEMPLATE
             int _DICT_HEAD::put(const key_t& key, const value_t& value){
                 size_t index = _hash(key);
                 int ret = 0;
@@ -98,6 +103,13 @@ namespace lightdis{
                 return ret;
             }
 
+        _DICT_TEMPLATE
+            int _DICT_HEAD::clearDict(){
+                //TODO 竞争条件
+                //TODO destroy _table
+                //TODO destroy _rehash_table
+            }
+
         _DICT_TEMPLATE 
             int _DICT_HEAD::_copyConstructNode(entry_node*& node, const key_t& key, const value_t& value){
                 node = _allocator.allocate(1);
@@ -114,6 +126,20 @@ namespace lightdis{
             }
 
         _DICT_TEMPLATE
+            void _DICT_HEAD::_destroyBucket(bucket* bc){
+                if (bc->bucket_size == 0){
+                    return;
+                }
+                entry_node* iter = bc->begin;   
+                entry_node* before = NULL;
+                for (; iter != NULL;){
+                    before = iter;
+                    iter = iter->next;
+                    _destroyNode(before);
+                }
+            }
+
+        _DICT_TEMPLATE
             size_t _DICT_HEAD::_hash(const key_t& key){
                 return _key_hash(key) % _size;
             }
@@ -127,11 +153,11 @@ namespace lightdis{
                 } 
                 else{
                     entry_node* iter = bc.begin;     
-                    do{
+                    for (; iter != NULL; iter = iter->next){
                         if(iter->key == key){
                             return &(iter->value); 
                         }
-                    }while(iter->next != NULL);
+                    }
                     err_code = DICT_ERR_KEY_NOT_EXISTES;
                     return NULL;
                 }
@@ -145,7 +171,7 @@ namespace lightdis{
                 }
                 else{
                     entry_node* iter = bc.begin; 
-                    do{
+                    for (; iter != NULL; iter = iter->next){
                         if (iter->key == key){
                             if (is_replace){
                                 iter->value = value; //这里调用赋值操作符
@@ -155,8 +181,8 @@ namespace lightdis{
                                 return DICT_ERR_KEY_EXISTS;
                             }
                         }
+
                     }
-                    while (iter->next != NULL);
                     _copyConstructNode(iter->next, key, value);
                     bc.bucket_size ++;
                     return SUCCESS;
@@ -170,12 +196,12 @@ namespace lightdis{
                 }
                 entry_node* iter = bc.begin;
                 entry_node* before = NULL;
-                do{
+                for (; iter != NULL; iter = iter->next){
                     if (iter->key == key){
                         if (iter == bc.begin){
+                            bc.begin = bc.begin->next;
+                            bc.bucket_size -= 1;
                             _destroyNode(iter);
-                            bc.begin = NULL;
-                            bc.bucket_size = 0;
                         }
                         before = iter->next;
                         _destroyNode(iter);
@@ -183,7 +209,7 @@ namespace lightdis{
                         return SUCCESS;
                     }
                     before = iter;
-                }while(iter->next != NULL);
+                }
 
                 return DICT_ERR_KEY_NOT_EXISTES;
             }
