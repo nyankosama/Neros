@@ -6,7 +6,7 @@
 #
 # Filename:		dict_test.cpp
 #
-# Description: 
+# Description:
 #
 =============================================================================*/
 
@@ -16,10 +16,10 @@
 
 using namespace std;
 
-namespace lightdis{
-    namespace base{
+namespace lightdis {
+    namespace base {
 
-        TEST(DICT, CREATE){
+        TEST(DICT, CREATE) {
             Dict<int, int> dict;
         }
     }

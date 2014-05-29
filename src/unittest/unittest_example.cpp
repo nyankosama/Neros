@@ -5,23 +5,23 @@
 using namespace std;
 using namespace lightdis::base;
 
-SUITE_TRIGGER(SUITE_CASE_1, BEFORE){
+SUITE_TRIGGER(SUITE_CASE_1, BEFORE) {
     cout << "before!" << endl;
 }
 
-SUITE_TRIGGER(SUITE_CASE_1, AFTER){
+SUITE_TRIGGER(SUITE_CASE_1, AFTER) {
     cout << "after!!" << endl;
 }
 
-SUITE_TRIGGER(SUITE_CASE_1, SETUP){
+SUITE_TRIGGER(SUITE_CASE_1, SETUP) {
     cout << "setup!" << endl;
 }
 
-SUITE_TRIGGER(SUITE_CASE_1, TEAR_DOWN){
+SUITE_TRIGGER(SUITE_CASE_1, TEAR_DOWN) {
     cout << "tearDown!" << endl;
 }
 
-TEST(SUITE_CASE_1, TEST_1){
+TEST(SUITE_CASE_1, TEST_1) {
     cout << "hello unittest!" << endl;
     StringData str1("123");
     StringData str2("12");

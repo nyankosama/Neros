@@ -3,30 +3,30 @@
 
 #include <stdlib.h>
 
-namespace lightdis{
-    namespace base{
+namespace lightdis {
+    namespace base {
         template <typename T>
         class Singleton {
-            public:
-                static T* val;
+        public:
+            static T* val;
 
-            public:
-                static void init(){
-                    val = new T();
-                }
+        public:
+            static void init() {
+                val = new T();
+            }
 
-                static void destory() {
-                    delete val;
-                    val = NULL;
-                }
+            static void destory() {
+                delete val;
+                val = NULL;
+            }
 
-                static T* get() {
-                    return val;
-                }  
+            static T* get() {
+                return val;
+            }
 
-                static void swap(T* newVal) {
-                    val = newVal;
-                }
+            static void swap(T* newVal) {
+                val = newVal;
+            }
         };
 
         template <typename T> T* Singleton<T>::val = NULL;

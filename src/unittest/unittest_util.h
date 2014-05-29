@@ -9,13 +9,13 @@
 
 using namespace std;
 
-namespace lightdis{
-    namespace unittest{
+namespace lightdis {
+    namespace unittest {
 
         /*
          * print out the msg with format time infomation
          */
-        inline void echo(const string& msg){
+        inline void echo(const string& msg) {
             time_t t = time(0);
             char tmp[64];
             strftime(tmp, sizeof(tmp), "%H:%M:%S", localtime(&t));

@@ -57,156 +57,174 @@ void _SUITE_AGENT_NAME(SUITE_NAME, TYPE)::handle()
 
 
 
-namespace lightdis{
-    namespace unittest{
-        struct FailInfo{
-                    FailInfo(unsigned int line, const string& file, const string& msg):line(line),
-                    file(file),
-                    msg(msg){}
+namespace lightdis {
+    namespace unittest {
+        struct FailInfo {
+            FailInfo(unsigned int line, const string& file, const string& msg):line(line),
+                file(file),
+                msg(msg) {}
 
-                    unsigned int line;
-                    string file;
-                    string msg;
-                };
+            unsigned int line;
+            string file;
+            string msg;
+        };
 
-        class TestHolder{
+        class TestHolder {
+        public:
+            TestHolder(const string& name):testName(name) {}
+            virtual void doTest() = 0;
+            void addFailInfo(unsigned int line, const string& file, const string& msg);
+            vector<FailInfo> getFailInfos() const {
+                return _fail_info_list;
+            }
+
+        private:
+            string testName;
+            vector<FailInfo> _fail_info_list;
+
+        protected:
+            template <typename T>
+            class RegistrationAgent {
             public:
-                TestHolder(const string& name):testName(name){}
-                virtual void doTest() = 0;
-                void addFailInfo(unsigned int line, const string& file, const string& msg);
-                vector<FailInfo> getFailInfos() const{return _fail_info_list;}
-                
-                            private:
-                string testName;
-                vector<FailInfo> _fail_info_list;
-
-            protected:
-                template <typename T>
-                    class RegistrationAgent{
-                        public:
-                            RegistrationAgent(const string& suite_name, const string& test_name);
-                    };
+                RegistrationAgent(const string& suite_name, const string& test_name);
+            };
 
         };
 
-        class SuiteHolder{
+        class SuiteHolder {
+        public:
+            class SuiteHandlerAgent;
+            SuiteHolder(const string& name):
+                _suite_name(name),
+                _before(new SuiteHandlerAgent()),
+                _after(new SuiteHandlerAgent()),
+                _setup(new SuiteHandlerAgent()),
+                _tear_down(new SuiteHandlerAgent()) {}
+
+            void registeTestHolder(TestHolder* holder);
+            void run();
+            void setBefore(SuiteHandlerAgent* agent) {
+                _before = agent;
+            }
+            void setAfter(SuiteHandlerAgent* agent) {
+                _after = agent;
+            }
+            void setSetup(SuiteHandlerAgent* agent) {
+                _setup = agent;
+            }
+            void setTeardown(SuiteHandlerAgent* agent) {
+                _tear_down = agent;
+            }
+            string getName() {
+                return _suite_name;
+            }
+            int getSize() {
+                return _test_holder_list.size();
+            }
+            int getFailNum();
+            vector<TestHolder*> getTestHolders() const {
+                return _test_holder_list;
+            }
+            class SuiteHandlerAgent {
             public:
-                class SuiteHandlerAgent;
-                SuiteHolder(const string& name):
-                    _suite_name(name),
-                    _before(new SuiteHandlerAgent()),
-                    _after(new SuiteHandlerAgent()),
-                    _setup(new SuiteHandlerAgent()),
-                    _tear_down(new SuiteHandlerAgent()){}
+                virtual void handle() {}
+            };
 
-                void registeTestHolder(TestHolder* holder);
-                void run();
-                void setBefore(SuiteHandlerAgent* agent){_before = agent;}
-                void setAfter(SuiteHandlerAgent* agent){_after = agent;}
-                void setSetup(SuiteHandlerAgent* agent){_setup = agent;}
-                void setTeardown(SuiteHandlerAgent* agent){_tear_down = agent;}
-                string getName(){return _suite_name;}
-                int getSize(){return _test_holder_list.size();}
-                int getFailNum();
-                vector<TestHolder*> getTestHolders() const {return _test_holder_list;}
-                class SuiteHandlerAgent{
-                    public:
-                        virtual void handle(){}
-                };
-
-                template <typename T>
-                    class HandlerRegistrationAgent{
-                        public:
-                            HandlerRegistrationAgent(const string& suite_name, const string& type);
-                    };
-            private:
-                string _suite_name;
-                vector<TestHolder*> _test_holder_list;
-                SuiteHandlerAgent* _before;
-                SuiteHandlerAgent* _after;
-                SuiteHandlerAgent* _setup;
-                SuiteHandlerAgent* _tear_down;
+            template <typename T>
+            class HandlerRegistrationAgent {
+            public:
+                HandlerRegistrationAgent(const string& suite_name, const string& type);
+            };
+        private:
+            string _suite_name;
+            vector<TestHolder*> _test_holder_list;
+            SuiteHandlerAgent* _before;
+            SuiteHandlerAgent* _after;
+            SuiteHandlerAgent* _setup;
+            SuiteHandlerAgent* _tear_down;
         };
 
 
-        class SuiteManager{
-            public:
-                SuiteHolder& getSuiteHolder(const string& suite_name);
-                void run(const string& test_name);
-                static SuiteManager* get(){return _instance;}
+        class SuiteManager {
+        public:
+            SuiteHolder& getSuiteHolder(const string& suite_name);
+            void run(const string& test_name);
+            static SuiteManager* get() {
+                return _instance;
+            }
 
-            private:
-                void report();
-                vector<SuiteHolder*> _suite_holder_list;
-                static SuiteManager* _instance;
+        private:
+            void report();
+            vector<SuiteHolder*> _suite_holder_list;
+            static SuiteManager* _instance;
 
         };
 
         SuiteManager* SuiteManager::_instance = new SuiteManager();
 
-        class TestAssertion{
-            protected:
-                TestAssertion(const char* file, unsigned line, TestHolder* test_holder):_test_holder(test_holder),_file(file),_line(line){}
-                void fail(const string& msg);
-                TestHolder* _test_holder;
-            private:
-                const char* _file;
-                const unsigned _line;
+        class TestAssertion {
+        protected:
+            TestAssertion(const char* file, unsigned line, TestHolder* test_holder):_test_holder(test_holder),_file(file),_line(line) {}
+            void fail(const string& msg);
+            TestHolder* _test_holder;
+        private:
+            const char* _file;
+            const unsigned _line;
         };
 
-        class ComparisonAssertion : public TestAssertion{
-            public:
-                ComparisonAssertion(const char* aexp, const char* bexp,
-                        const char* file, unsigned line, TestHolder* test_holder):TestAssertion(file, line, test_holder),_aexp(aexp),_bexp(bexp){}
+        class ComparisonAssertion : public TestAssertion {
+        public:
+            ComparisonAssertion(const char* aexp, const char* bexp,
+                                const char* file, unsigned line, TestHolder* test_holder):TestAssertion(file, line, test_holder),_aexp(aexp),_bexp(bexp) {}
 
-                template<typename A, typename B>
-                    void assertEqual(const A& a, const B& b){
-                        if (a == b) 
-                            return;
-                        fail(getFailMessage("==", a, b));
-                    }
+            template<typename A, typename B>
+            void assertEqual(const A& a, const B& b) {
+                if (a == b)
+                    return;
+                fail(getFailMessage("==", a, b));
+            }
 
-                template<typename A, typename B>
-                    void assertNotEqual(const A& a, const B& b){
-                        if (a != b)
-                            return;
-                        fail(getFailMessage("!=", a, b));
-                    }
+            template<typename A, typename B>
+            void assertNotEqual(const A& a, const B& b) {
+                if (a != b)
+                    return;
+                fail(getFailMessage("!=", a, b));
+            }
 
-                template<typename A, typename B>
-                    void assertLessThan(const A& a, const B& b){
-                        if (a < b)
-                            return;
-                        fail(getFailMessage("<", a, b));
-                    }
+            template<typename A, typename B>
+            void assertLessThan(const A& a, const B& b) {
+                if (a < b)
+                    return;
+                fail(getFailMessage("<", a, b));
+            }
 
-                template<typename A, typename B>
-                    void assertGreaterThan(const A& a, const B& b){
-                        if (a > b)
-                            return;
-                        fail(getFailMessage(">", a, b));
-                    }
+            template<typename A, typename B>
+            void assertGreaterThan(const A& a, const B& b) {
+                if (a > b)
+                    return;
+                fail(getFailMessage(">", a, b));
+            }
 
-                template<typename A, typename B>
-                    void assertNotLessThan(const A& a, const B& b){
-                        if (a >= b)
-                            return;
-                        fail(getFailMessage(">=", a, b));
-                    }
+            template<typename A, typename B>
+            void assertNotLessThan(const A& a, const B& b) {
+                if (a >= b)
+                    return;
+                fail(getFailMessage(">=", a, b));
+            }
 
-                template<typename A, typename B>
-                    void assertNotGreaterThan(const A& a, const B& b){
-                        if (a <= b)
-                            return;
-                        fail(getFailMessage("<=", a, b));
-                    }
+            template<typename A, typename B>
+            void assertNotGreaterThan(const A& a, const B& b) {
+                if (a <= b)
+                    return;
+                fail(getFailMessage("<=", a, b));
+            }
 
 
-            private:
-                template<typename A, typename B>
-                    string getFailMessage(const string& operation, A& a, B& b);
-                const char* _aexp;
-                const char* _bexp;
+        private:
+            template<typename A, typename B>
+            string getFailMessage(const string& operation, A& a, B& b);
+            const char* _aexp;
+            const char* _bexp;
         };
 
     }

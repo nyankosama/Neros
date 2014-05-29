@@ -1,5 +1,5 @@
 #ifndef BASE_STRING_DATA_INL_H_
-#define BASE_STRING_DATA_INL_H_ 
+#define BASE_STRING_DATA_INL_H_
 
 #include <cstring>
 #include <string>
@@ -9,11 +9,11 @@
 #include "base/constants.h"
 
 
-namespace lightdis{
-    namespace base{
-        
+namespace lightdis {
+    namespace base {
+
         template<class Allocator_>
-        BasicStringData<Allocator_>::BasicStringData(){
+        BasicStringData<Allocator_>::BasicStringData() {
             _free = 0;
             _len = 0;
             _data = _createSpace(1);
@@ -27,7 +27,7 @@ namespace lightdis{
         }
 
         template<class Allocator_>
-        BasicStringData<Allocator_>::BasicStringData(const char* c){
+        BasicStringData<Allocator_>::BasicStringData(const char* c) {
             _len = strlen(c);
             _data = _createSpace(_len * 2 + 1);
             _free = _len;
@@ -45,7 +45,7 @@ namespace lightdis{
         }
 
         template<class Allocator_>
-        BasicStringData<Allocator_>::BasicStringData(const string& c){
+        BasicStringData<Allocator_>::BasicStringData(const string& c) {
             const char* c_str = c.c_str();
             _len = strlen (c_str);
             _data = _createSpace(_len * 2 + 1);
@@ -55,7 +55,7 @@ namespace lightdis{
         }
 
         template<class Allocator_>
-        BasicStringData<Allocator_>::BasicStringData(size_t free){
+        BasicStringData<Allocator_>::BasicStringData(size_t free) {
             this->_len = 0;
             _free = free;
             _data = _createSpace(free + 1);
@@ -68,17 +68,17 @@ namespace lightdis{
         }
 
         template<class Allocator_>
-        inline void BasicStringData<Allocator_>::copyTo(char* dest, bool include_ending_null) const{
+        inline void BasicStringData<Allocator_>::copyTo(char* dest, bool include_ending_null) const {
             memcpy(dest, _data, _len);
-            if (include_ending_null){
+            if (include_ending_null) {
                 dest[_len] = '\0';
             }
         }
 
 
         template<class Allocator_>
-        inline BasicStringData<Allocator_>& BasicStringData<Allocator_>::append(const char* app_str, size_t len){
-            if (len == 0){
+        inline BasicStringData<Allocator_>& BasicStringData<Allocator_>::append(const char* app_str, size_t len) {
+            if (len == 0) {
                 len = strlen(app_str);
             }
             _makeRoomForAppend(len);
@@ -98,13 +98,11 @@ namespace lightdis{
         template<class Allocator_>
         inline int BasicStringData<Allocator_>::compare(const BasicStringData<Allocator_>& other) const {
             int res = memcmp(_data, other._data, std::min(_len, other._len));
-            if (res != 0){
+            if (res != 0) {
                 return res > 0 ? 1 : -1;
-            }
-            else if(_len == other._len){
+            } else if(_len == other._len) {
                 return 0;
-            }
-            else {
+            } else {
                 return _len > other._len ? 1 : -1;
             }
         }
@@ -112,10 +110,9 @@ namespace lightdis{
 
         template<class Allocator_>
         inline BasicStringData<Allocator_> BasicStringData<Allocator_>::subStr(size_t start_pos, size_t len) const {
-            if (len > _len || len == string::npos){
+            if (len > _len || len == string::npos) {
                 return BasicStringData<Allocator_>(_data + start_pos, _len - start_pos);
-            }
-            else{
+            } else {
                 if (len > _len - start_pos)
                     len = _len - start_pos;
                 return BasicStringData<Allocator_>(_data + start_pos, len);
@@ -124,7 +121,7 @@ namespace lightdis{
 
 
         template<class Allocator_>
-        inline void BasicStringData<Allocator_>::_makeRoomForAppend(size_t required_len){
+        inline void BasicStringData<Allocator_>::_makeRoomForAppend(size_t required_len) {
             if (_free >= required_len)
                 return;
 
@@ -140,16 +137,16 @@ namespace lightdis{
             _destroySpace(_data, _len + _free + 1);
             _data = tmp;
             _free = newlen - _len;
-        }       
+        }
 
         template<class Allocator_>
         inline size_t BasicStringData<Allocator_>::find(char c, size_t from_pos) const {
-            if (from_pos >= _len){
+            if (from_pos >= _len) {
                 return string::npos;
             }
 
             const void* x = memchr(_data + from_pos, c, _len - from_pos);
-            if (x == NULL){
+            if (x == NULL) {
                 return string::npos;
             }
 
@@ -158,22 +155,21 @@ namespace lightdis{
 
 
         template<class Allocator_>
-        inline size_t BasicStringData<Allocator_>::find(const BasicStringData<Allocator_>& needle) const{
+        inline size_t BasicStringData<Allocator_>::find(const BasicStringData<Allocator_>& needle) const {
             size_t mx = _len;
             size_t needle_size = needle.size();
 
-            if (needle_size == 0){
+            if (needle_size == 0) {
                 return 0;
-            }
-            else if (needle_size > mx){
+            } else if (needle_size > mx) {
                 return string::npos;
             }
 
             mx -= needle_size;
 
             //TODO performance problem, string find algorithm can be replaced with KMP
-            for (size_t i = 0; i <= mx; i++){
-                if (memcmp(_data + i, needle._data, needle_size) == 0){
+            for (size_t i = 0; i <= mx; i++) {
+                if (memcmp(_data + i, needle._data, needle_size) == 0) {
                     return i;
                 }
             }
@@ -181,8 +177,8 @@ namespace lightdis{
         }
 
         template<class Allocator_>
-        inline size_t BasicStringData<Allocator_>::rfind(char c, size_t from_pos) const{
-            if (from_pos >= _len){
+        inline size_t BasicStringData<Allocator_>::rfind(char c, size_t from_pos) const {
+            if (from_pos >= _len) {
                 from_pos = _len;
             }
 
@@ -194,7 +190,7 @@ namespace lightdis{
         }
 
         template<class Allocator_>
-        inline bool BasicStringData<Allocator_>::equals(const BasicStringData<Allocator_>& other) const{
+        inline bool BasicStringData<Allocator_>::equals(const BasicStringData<Allocator_>& other) const {
             if (compare(other) == 0)
                 return true;
             else
@@ -202,28 +198,28 @@ namespace lightdis{
         }
 
         template<class Allocator_>
-        inline bool BasicStringData<Allocator_>::startsWith(const BasicStringData<Allocator_>& prefix) const{
+        inline bool BasicStringData<Allocator_>::startsWith(const BasicStringData<Allocator_>& prefix) const {
             return subStr(0, prefix.size()).equals(prefix);
         }
 
         template<class Allocator_>
-        inline bool BasicStringData<Allocator_>::endsWith(const BasicStringData<Allocator_>& suffix) const{
+        inline bool BasicStringData<Allocator_>::endsWith(const BasicStringData<Allocator_>& suffix) const {
             const size_t this_size = _len;
             const size_t suffix_size = suffix.size();
-            if (suffix_size > this_size){
+            if (suffix_size > this_size) {
                 return false;
             }
             return subStr(this_size - suffix_size).equals(suffix);
         }
 
         template<class Allocator_>
-        inline char* BasicStringData<Allocator_>::_createSpace(size_t size){
+        inline char* BasicStringData<Allocator_>::_createSpace(size_t size) {
             char* ptr = _allocator.allocate(size);
             return ptr;
         }
 
         template<class Allocator_>
-        inline int BasicStringData<Allocator_>::_destroySpace(char* ptr, size_t size){
+        inline int BasicStringData<Allocator_>::_destroySpace(char* ptr, size_t size) {
             _allocator.deallocate(ptr, size);
         }
 

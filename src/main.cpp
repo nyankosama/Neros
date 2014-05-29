@@ -6,7 +6,7 @@
 #
 # Filename:     Main.cpp
 #
-# Description: 
+# Description:
 #
 =============================================================================*/
 #include <iostream>
@@ -19,8 +19,8 @@ using namespace lightdis::base;
 
 
 
-void print_mem_as_int(char* cptr, int len){
-    for (int i=0; i<len; i++){
+void print_mem_as_int(char* cptr, int len) {
+    for (int i=0; i<len; i++) {
         cout << (int)*cptr << endl;
         cptr++;
     }
@@ -28,7 +28,7 @@ void print_mem_as_int(char* cptr, int len){
 
 int main() {
     StringData data1(2);
-    
+
     /*
     List<int> list;
     ListNode<int>* n1 = new ListNode<int>();
@@ -50,3 +50,4 @@ int main() {
     printList(list);
     */
 }
+

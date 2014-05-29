@@ -6,7 +6,7 @@
 #
 # Filename:		Constants.h
 #
-# Description: 
+# Description:
 #
 =============================================================================*/
 #ifndef BASE_CONSTRANT_H_
@@ -28,8 +28,8 @@ int ERR_REF = 0;//用作errcode引用的默认参数赋值
 
 //======dict.h end======
 
-namespace lightdis{
-    namespace base{
+namespace lightdis {
+    namespace base {
 
         const int DEFAULT_FREE_LEN = 20;
         const int STRING_DATA_MAX_PREALLOC = 1024 * 1024;
