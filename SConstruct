@@ -29,15 +29,17 @@ env.Program(target = "unittest",
 
 #build and run the unittest cases
 testSrcList = os.listdir(testDir)
+testList = list()
 for fileName in testSrcList:
     if util.isCppFile(fileName) is not True:
         continue
 
-    env.Program(target = testDir + os.path.sep + "_TEST__" + fileName[: fileName.index(".cpp")],
+    testTarget = env.Program(target = testDir + os.path.sep + "_TEST__" + fileName[: fileName.index(".cpp")],
             source = testDir + os.path.sep + fileName,
             LIBS=libs,
             LIBPATH=libpath,
             CPPPATH=srcDir)
+    testList.append(testTarget)
 
 def runTest(target, source, env):
     testList = os.listdir(testDir)
@@ -46,4 +48,4 @@ def runTest(target, source, env):
             os.system(testDir + os.path.sep + fileName)
 
 test = Command('test', [], runTest)
-Depends(test, DEFAULT_TARGETS)
+Depends(test, testList)
