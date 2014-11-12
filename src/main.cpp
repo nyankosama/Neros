@@ -28,26 +28,5 @@ void print_mem_as_int(char* cptr, int len) {
 
 int main() {
     StringData data1(2);
-
-    /*
-    List<int> list;
-    ListNode<int>* n1 = new ListNode<int>();
-    ListNode<int>* n2 = new ListNode<int>();
-    ListNode<int>* n3 = new ListNode<int>();
-    ListNode<int>* val = new ListNode<int>();
-    n1->value = 1;
-    n2->value = 2;
-    n3->value = 3;
-    val->value = 4;
-    list.appendTail(n1);
-    list.appendTail(n2);
-    list.appendHead(n3);
-
-    printList(list);
-    ListNode<int>* tmp = list.popAt(3);
-    if(tmp != 0)
-        cout<<tmp->value<< endl;
-    printList(list);
-    */
 }
 

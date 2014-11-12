@@ -14,18 +14,19 @@ env.StaticLibrary(target = 'datastructure',
 libs = Split('datastructure')
 libpath = './'
 
-env.Program(target = 'lightdis',
+binCom = env.Program(target = 'lightdis',
         source = srcDir+'/main.cpp',
         LIBS=libs,
         LIBPATH=libpath,
         CPPPATH=srcDir)
 
-env.Program(target = "unittest",
+testCom = env.Program(target = "unittest",
         source = srcDir+'/unittest/unittest_example.cpp',
         LIBS=libs,
         LIBPATH=libpath,
         CPPPATH=srcDir)
 
+den = Depends(testCom, binCom)
 
 #build and run the unittest cases
 testSrcList = os.listdir(testDir)
@@ -48,4 +49,4 @@ def runTest(target, source, env):
             os.system(testDir + os.path.sep + fileName)
 
 test = Command('test', [], runTest)
-Depends(test, testList)
+Depends(test, testCom)
